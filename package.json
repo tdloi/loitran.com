@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "minireset.css": "0.0.6",
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.18",
+    "@types/react": "^16.9.41",
+    "typescript": "^3.9.6"
   }
 }
