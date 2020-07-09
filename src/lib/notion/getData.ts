@@ -2,21 +2,7 @@ import { NotionResponse, IGetTableOptions } from "../../interfaces";
 import { API_ENDPOINT, NOTION_TOKEN, CACHE_DIR } from "../../constants";
 import { readFile, writeFile } from "../../utils";
 
-async function getNotionData(
-  endpoint: string,
-  body: any,
-  cacheId = "",
-  cache = 60
-): Promise<NotionResponse> {
-  const cacheFile = `${CACHE_DIR}/${endpoint}-${cacheId}`;
-  const expireDate = Math.round(Date.now() / 1000) + cache;
-  try {
-    const data = JSON.parse(await readFile(cacheFile, "utf-8"));
-    if (data.expired > expireDate) {
-      return data;
-    }
-  } catch {}
-
+async function getNotionData(endpoint: string, body: any): Promise<NotionResponse> {
   const response = await fetch(`${API_ENDPOINT}/${endpoint}`, {
     method: "POST",
     headers: {
@@ -31,31 +17,26 @@ async function getNotionData(
   }
 
   const data: NotionResponse = await response.json();
-  data.expired = expireDate;
+  // too many request Notion will return empty
   if (data.recordMap.collection == null) {
-    return getNotionData(endpoint, body, cacheId, cache);
+    return getNotionData(endpoint, body);
   }
 
-  return writeFile(cacheFile, JSON.stringify(data), "utf-8").then(() => data);
+  return data;
 }
 
 export async function getPage(pageId: string) {
-  return getNotionData(
-    "loadPageChunk",
-    {
-      pageId: pageId,
-      limit: 999,
-      chunkNumber: 0,
-      verticalColumns: false,
-    },
-    pageId
-  );
+  return getNotionData("loadPageChunk", {
+    pageId: pageId,
+    limit: 999,
+    chunkNumber: 0,
+    verticalColumns: false,
+  });
 }
 
 const defaultOptions: IGetTableOptions = {
   limit: 999,
   search: "",
-  cache: 3600,
   published: true,
 };
 
@@ -111,14 +92,9 @@ export async function getTable(table_id: string, getTableOptions: IGetTableOptio
     params.loader["searchQuery"] = options.search;
   }
 
-  return getNotionData(
-    "queryCollection",
-    {
-      collectionId: pageInfo.id,
-      collectionViewId: pageInfo.viewId,
-      ...params,
-    },
-    `${table_id}_${options.search}`,
-    options.cache
-  );
+  return getNotionData("queryCollection", {
+    collectionId: pageInfo.id,
+    collectionViewId: pageInfo.viewId,
+    ...params,
+  });
 }

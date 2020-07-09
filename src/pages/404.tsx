@@ -62,5 +62,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       stories: stories.sort((a, b) => b.time - a.time),
     },
+    unstable_revalidate: 84600,
   };
 };

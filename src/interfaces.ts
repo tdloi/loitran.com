@@ -97,7 +97,6 @@ export interface IBlogEntry {
 
 export interface IGetTableOptions {
   limit?: number;
-  cache?: number;
   search?: string;
   published?: null | boolean;
 }

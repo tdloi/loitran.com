@@ -50,5 +50,6 @@ export const getStaticProps: GetStaticProps = async () => {
       index: index,
       posts: recentsPost,
     },
+    unstable_revalidate: 60,
   };
 };
