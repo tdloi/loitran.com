@@ -9,8 +9,9 @@ interface IProps {
 
 export default function Home(props: IProps) {
   if (props.post == null) {
-    <DefaultErrorPage statusCode={404} />;
+    return <DefaultErrorPage statusCode={404} />;
   }
+
   return (
     <div className="container">
       <section className="section">
@@ -42,8 +43,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
 
   return {
-    paths: [{ params: { slug: "this-is-slug" } }, { params: { slug: "hello-world" } }],
-    fallback: true,
+    paths: posts.map((post) => {
+      return {
+        params: { slug: post.slug },
+      };
+    }),
+    fallback: false,
   };
 };
 
@@ -52,6 +57,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (typeof slug !== "string") {
     slug = slug[0];
   }
+
   let post = await getBlogList({
     limit: 1,
     search: slug,
@@ -59,7 +65,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
-      post: post?.[0],
+      post: post?.[0] ?? null,
     },
   };
 };
