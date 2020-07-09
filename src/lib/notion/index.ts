@@ -72,6 +72,7 @@ export async function getIndex() {
       labelContent.push(value.properties.title[0][0]);
     }
   }
+  content[label] = labelContent;
 
   return content;
 }

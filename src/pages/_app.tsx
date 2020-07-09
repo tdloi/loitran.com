@@ -4,6 +4,7 @@ import Head from "next/head";
 import resetCSS from "minireset.css";
 import { Layout } from "../components/Layout";
 import { theme } from "../theme";
+import "typeface-raleway";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -23,10 +24,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           margin: 0;
           background: ${theme.bg};
           color: ${theme.fg};
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
+          font-family: Raleway, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+            Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           font-size: 18px;
+          line-height: 1.75;
         }
       `}</style>
     </Layout>
