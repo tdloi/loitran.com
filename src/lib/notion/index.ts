@@ -1,11 +1,13 @@
+import slugify from "slugify";
 import { getTable, getPage } from "./getData";
 import { BLOG_INDEX_ID, INDEX_ID } from "../../constants";
+import { IBlogEntry } from "../../interfaces";
 
 export async function getBlogList(limit = 999) {
   const contentsList = await getTable(BLOG_INDEX_ID, limit);
   const schema = Object.values(contentsList.recordMap.collection)[0].value.schema;
   const blockIds = contentsList.result.blockIds;
-  return blockIds.map((id) =>
+  const lists = blockIds.map<IBlogEntry>((id) =>
     Object.keys(schema).reduce(
       (result, index) => {
         const prop_value = contentsList.recordMap.block[id].value.properties?.[index];
@@ -35,6 +37,7 @@ export async function getBlogList(limit = 999) {
           default:
             value = prop_value[0][0];
         }
+
         result[key] = value;
         return result;
       },
@@ -47,6 +50,13 @@ export async function getBlogList(limit = 999) {
       }
     )
   );
+
+  return lists.map<IBlogEntry>((item: IBlogEntry) => {
+    if (item.slug == null) {
+      item.slug = slugify(item.name);
+    }
+    return item;
+  });
 }
 
 export async function getIndex() {

@@ -12,6 +12,7 @@
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "slugify": "^1.4.4",
     "typeface-raleway": "0.0.75"
   },
   "devDependencies": {

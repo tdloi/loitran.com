@@ -83,4 +83,13 @@ export interface NotionResponse {
       };
     };
   };
+  expired: number; // custom
+}
+
+export interface IBlogEntry {
+  name: string;
+  date: string;
+  slug: string;
+  published: boolean;
+  tags: Array<string>;
 }
