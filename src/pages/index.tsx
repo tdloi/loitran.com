@@ -1,18 +1,26 @@
 import { GetStaticProps } from "next";
 import { getBlogList, getIndex } from "../lib/notion";
 import { BlogEntries } from "../components/BlogEntry";
+import { IBlogEntry } from "../interfaces";
 
-export default function Home(props) {
+interface IProps {
+  index: {
+    about?: Array<string>;
+  };
+  posts: Array<IBlogEntry>;
+}
+
+export default function Home(props: IProps) {
   return (
     <div className="container">
       <p className="intro">Hi, I'm Loi</p>
-      {props.index.about.map((i) => {
+      {props.index.about?.map((i) => {
         if (i === null) return <br key={i} />;
         return <p key={i}>{i}</p>;
       })}
       <section className="section">
         <h1 className="title">Recent Posts</h1>
-        <BlogEntries entries={props.blogs} />
+        <BlogEntries entries={props.posts} />
       </section>
       <style jsx>{`
         .section {
@@ -39,7 +47,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       index: index,
-      blogs: recentsPost,
+      posts: recentsPost,
     },
   };
 };

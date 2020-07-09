@@ -47,6 +47,7 @@ export async function getBlogList(limit = 999) {
         slug: null,
         published: false,
         tags: [],
+        year: null,
       }
     )
   );
@@ -55,6 +56,7 @@ export async function getBlogList(limit = 999) {
     if (item.slug == null) {
       item.slug = slugify(item.name);
     }
+    item.year = parseInt(item.date); // year-month-day
     return item;
   });
 }

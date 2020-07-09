@@ -92,4 +92,5 @@ export interface IBlogEntry {
   slug: string;
   published: boolean;
   tags: Array<string>;
+  year: number;
 }
