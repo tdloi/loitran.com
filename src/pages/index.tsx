@@ -41,7 +41,7 @@ export default function Home(props: IProps) {
   );
 }
 export const getStaticProps: GetStaticProps = async () => {
-  const recentsPost = await getBlogList(3);
+  const recentsPost = await getBlogList({ limit: 3 });
   const index = await getIndex();
 
   return {

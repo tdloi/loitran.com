@@ -1,4 +1,4 @@
-import { NotionResponse } from "../../interfaces";
+import { NotionResponse, IGetTableOptions } from "../../interfaces";
 import { API_ENDPOINT, NOTION_TOKEN, CACHE_DIR } from "../../constants";
 import { readFile, writeFile } from "../../utils";
 
@@ -47,9 +47,20 @@ export async function getPage(pageId: string) {
   );
 }
 
-export async function getTable(table_id: string, limit, cache = 3600) {
+const defaultOptions: IGetTableOptions = {
+  limit: 999,
+  search: "",
+  cache: 3600,
+  published: true,
+};
+
+export async function getTable(table_id: string, getTableOptions: IGetTableOptions) {
+  const options = {
+    ...defaultOptions,
+    ...getTableOptions,
+  };
   let pageInfo = null;
-  const cacheFile = `${CACHE_DIR}/table_${table_id}`;
+  let cacheFile = `${CACHE_DIR}/table_${table_id}`;
 
   try {
     pageInfo = JSON.parse(await readFile(cacheFile, "utf-8"));
@@ -66,35 +77,43 @@ export async function getTable(table_id: string, limit, cache = 3600) {
     writeFile(cacheFile, JSON.stringify(pageInfo));
   }
 
+  const params = {
+    loader: {
+      type: "table",
+      limit: options.limit,
+    },
+    query: {
+      sort: [{ property: pageInfo.date_field, direction: "descending" }],
+    },
+  };
+
+  if (typeof options.published === "boolean") {
+    params.query["filter"] = {
+      operator: "and",
+      filters: [
+        {
+          property: pageInfo.published_field,
+          filter: {
+            operator: "checkbox_is",
+            value: { type: "exact", value: options.published },
+          },
+        },
+      ],
+    };
+  }
+
+  if (options.search !== "") {
+    params.loader["searchQuery"] = options.search;
+  }
+
   return getNotionData(
     "queryCollection",
     {
       collectionId: pageInfo.id,
       collectionViewId: pageInfo.viewId,
-      loader: {
-        type: "table",
-        limit: limit,
-      },
-      query: {
-        sort: [{ property: pageInfo.date_field, direction: "descending" }],
-        filter: {
-          operator: "and",
-          filters: [
-            {
-              property: pageInfo.published_field,
-              filter: {
-                operator: "checkbox_is",
-                value: {
-                  type: "exact",
-                  value: true,
-                },
-              },
-            },
-          ],
-        },
-      },
+      ...params,
     },
-    table_id,
-    cache
+    `${table_id}_${options.search}`,
+    options.cache
   );
 }

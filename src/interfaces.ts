@@ -94,3 +94,10 @@ export interface IBlogEntry {
   tags: Array<string>;
   year: number;
 }
+
+export interface IGetTableOptions {
+  limit?: number;
+  cache?: number;
+  search?: string;
+  published?: null | boolean;
+}

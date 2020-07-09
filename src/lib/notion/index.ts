@@ -1,10 +1,11 @@
 import slugify from "slugify";
 import { getTable, getPage } from "./getData";
 import { BLOG_INDEX_ID, INDEX_ID } from "../../constants";
-import { IBlogEntry } from "../../interfaces";
+import { IBlogEntry, IGetTableOptions } from "../../interfaces";
 
-export async function getBlogList(limit = 999) {
-  const contentsList = await getTable(BLOG_INDEX_ID, limit);
+export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry[] | null> {
+  const contentsList = await getTable(BLOG_INDEX_ID, { limit: 999, published: true, ...options });
+
   const schema = Object.values(contentsList.recordMap.collection)[0].value.schema;
   const blockIds = contentsList.result.blockIds;
   const lists = blockIds.map<IBlogEntry>((id) =>
@@ -51,6 +52,8 @@ export async function getBlogList(limit = 999) {
       }
     )
   );
+
+  if (lists.length === 0) return null;
 
   return lists.map<IBlogEntry>((item: IBlogEntry) => {
     if (item.slug == null) {

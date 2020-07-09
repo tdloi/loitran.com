@@ -46,7 +46,7 @@ export default function Blog(props: IProps) {
 }
 export const getStaticProps: GetStaticProps = async () => {
   const index = await getIndex();
-  const posts = await getBlogList(999);
+  const posts = await getBlogList({ limit: 999 });
 
   return {
     props: {
