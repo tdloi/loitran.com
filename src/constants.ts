@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs";
+
 const normalizeId = (id: string) => {
   if (!id) return id;
   if (id.length === 36) return id;
@@ -11,9 +14,14 @@ const normalizeId = (id: string) => {
   )}`;
 };
 
+const CACHE_DIR = path.resolve(".cache");
+if (!fs.existsSync(CACHE_DIR)) {
+  fs.mkdirSync(CACHE_DIR);
+}
+
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const BLOG_INDEX_ID = normalizeId(process.env.BLOG_INDEX_ID);
 const INDEX_ID = normalizeId(process.env.INDEX_ID);
 const API_ENDPOINT = "https://www.notion.so/api/v3";
 
-export { NOTION_TOKEN, BLOG_INDEX_ID, INDEX_ID, API_ENDPOINT };
+export { CACHE_DIR, NOTION_TOKEN, BLOG_INDEX_ID, INDEX_ID, API_ENDPOINT };

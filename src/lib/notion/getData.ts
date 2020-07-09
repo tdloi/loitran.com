@@ -1,5 +1,6 @@
 import { NotionResponse } from "../../interfaces";
-import { API_ENDPOINT, NOTION_TOKEN } from "../../constants";
+import { API_ENDPOINT, NOTION_TOKEN, CACHE_DIR } from "../../constants";
+import { readFile, writeFile } from "../../utils";
 
 async function getNotionData(endpoint: string, body: any): Promise<NotionResponse> {
   const response = await fetch(`${API_ENDPOINT}/${endpoint}`, {
@@ -23,20 +24,32 @@ export async function getPage(pageId: string) {
 }
 
 export async function getTable(table_id: string, limit) {
-  // get collection and collection view id
-  const collection = await getPage(table_id);
-  const schema = Object.values(collection.recordMap.collection)[0].value.schema;
-  const date_field = Object.keys(schema).filter((key) => schema[key].type === "date")[0];
+  let pageInfo = null;
+  const cacheFile = `${CACHE_DIR}/table_${table_id}`;
+
+  try {
+    pageInfo = JSON.parse(await readFile(cacheFile, "utf-8"));
+  } catch {
+    const collection = await getPage(table_id);
+    // get collection and collection view id
+    const schema = Object.values(collection.recordMap.collection)[0].value.schema;
+    pageInfo = {
+      id: Object.keys(collection.recordMap.collection)[0],
+      viewId: Object.keys(collection.recordMap.collection_view)[0],
+      date_field: Object.keys(schema).filter((key) => schema[key].type === "date")[0],
+    };
+    writeFile(cacheFile, JSON.stringify(pageInfo));
+  }
 
   return getNotionData("queryCollection", {
-    collectionId: Object.keys(collection.recordMap.collection)[0],
-    collectionViewId: Object.keys(collection.recordMap.collection_view)[0],
+    collectionId: pageInfo.id,
+    collectionViewId: pageInfo.viewId,
     loader: {
       type: "table",
       limit: limit,
     },
     query: {
-      sort: [{ property: date_field, direction: "descending" }],
+      sort: [{ property: pageInfo.date_field, direction: "descending" }],
     },
   });
 }
