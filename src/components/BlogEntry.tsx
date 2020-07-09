@@ -11,7 +11,7 @@ interface IProps {
 export const BlogEntries: FC<IProps> = (props) => {
   return (
     <ul>
-      {props.entries.map((post) => (
+      {props?.entries?.map((post) => (
         <li key={post.slug}>
           <Link href={`/post/${post.slug}`}>
             <a className="post-entry">

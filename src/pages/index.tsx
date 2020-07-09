@@ -20,6 +20,7 @@ export default function Home(props: IProps) {
       })}
       <section className="section">
         <h1 className="title">Recent Posts</h1>
+        {!props.posts && <span>No post available</span>}
         <BlogEntries entries={props.posts} />
       </section>
       <style jsx>{`

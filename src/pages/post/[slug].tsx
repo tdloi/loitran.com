@@ -43,11 +43,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
 
   return {
-    paths: posts.map((post) => {
-      return {
-        params: { slug: post.slug },
-      };
-    }),
+    paths:
+      posts?.map((post) => {
+        return {
+          params: { slug: post.slug },
+        };
+      }) ?? [],
     fallback: false,
   };
 };

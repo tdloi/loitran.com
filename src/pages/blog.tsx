@@ -20,9 +20,10 @@ export default function Blog(props: IProps) {
         if (i === null) return <br key={i} />;
         return <p key={i}>{i}</p>;
       })}
-      {props.posts.map((item) => (
+      {props.posts?.map((item) => (
         <section className="section" key={item.year}>
           <h1 className="title">{item.year}</h1>
+          {!props.posts && <span>No post available</span>}
           <BlogEntries entries={item.posts} />
         </section>
       ))}
@@ -51,18 +52,19 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       index: index,
-      posts: posts.reduce((acc, curr) => {
-        let item = acc.find((i: IBlogEntry) => i.year === curr.year);
-        if (item == null) {
-          acc.push({
-            year: curr.year,
-            posts: [curr],
-          });
-        } else {
-          item.posts.push(curr);
-        }
-        return acc;
-      }, []),
+      posts:
+        posts?.reduce((acc, curr) => {
+          let item = acc.find((i: IBlogEntry) => i.year === curr.year);
+          if (item == null) {
+            acc.push({
+              year: curr.year,
+              posts: [curr],
+            });
+          } else {
+            item.posts.push(curr);
+          }
+          return acc;
+        }, []) ?? null,
     },
   };
 };
