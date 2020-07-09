@@ -12,7 +12,7 @@ async function getNotionData(
   const expireDate = Math.round(Date.now() / 1000) + cache;
   try {
     const data = JSON.parse(await readFile(cacheFile, "utf-8"));
-    if (data.expired < expireDate) {
+    if (data.expired > expireDate) {
       return data;
     }
   } catch {}
@@ -25,6 +25,11 @@ async function getNotionData(
     },
     body: JSON.stringify(body),
   });
+
+  if (response.status === 400) {
+    throw new Error("NOT FOUND. Please check your INDEX ID or TOKEN");
+  }
+
   const data: NotionResponse = await response.json();
   data.expired = expireDate;
   if (data.recordMap.collection == null) {
