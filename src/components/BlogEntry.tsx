@@ -13,7 +13,7 @@ export const BlogEntries: FC<IProps> = (props) => {
     <ul>
       {props.entries.map((post) => (
         <li key={post.slug}>
-          <Link href={`/blog/${post.slug}`}>
+          <Link href={`/post/${post.slug}`}>
             <a className="post-entry">
               <span className="post-date">{formatDate(post.date)}</span>
               <span className="post-title">{post.name}</span>
