@@ -92,7 +92,9 @@ export async function getIndex() {
       continue;
     }
     labelContent.push(...format(item));
-    labelContent.push({ tag: "br", attr: {}, content: null });
+    if (item.type === "text") {
+      labelContent.push({ tag: "br", attr: {}, content: null });
+    }
   }
 
   if (label != null) {

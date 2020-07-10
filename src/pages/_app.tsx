@@ -2,9 +2,10 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 // @ts-ignore
 import resetCSS from "minireset.css";
+import "../assets/prism-atom-dark.css";
+import "typeface-raleway";
 import { Layout } from "../components/Layout";
 import { theme } from "../theme";
-import "typeface-raleway";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (

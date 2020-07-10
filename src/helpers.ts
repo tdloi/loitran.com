@@ -1,6 +1,7 @@
 import sanitize from "sanitize-html";
 import { IBlock, IContent } from "./interfaces";
 import { createElement } from "react";
+import { component } from "./components/Formatter";
 
 export const formatDate = (date: string) => {
   const d = new Date(date);
@@ -13,6 +14,10 @@ export const formatDate = (date: string) => {
 
 // recursive render element
 export const render = (item: IContent, key: string | number | null = null): React.ReactElement => {
+  if (item.tag === "code") {
+    // ts does not support React Component directly
+    return createElement(component.Code, item.attr as any, null);
+  }
   if (item.content == null || typeof item.content === "string") {
     return createElement(item.tag, item.attr, item.content);
   }
@@ -38,6 +43,18 @@ export const format = (item: IBlock): Array<IContent> => {
   if (item.type === "quote") {
     // TODO: Allow line split \n
     return [{ tag: "quote", attr: {}, content: item.properties.title[0][0] }];
+  }
+  if (item.type === "code") {
+    return [
+      {
+        tag: "code",
+        attr: {
+          content: item.properties.title[0][0],
+          language: item.properties.language[0][0].toLowerCase(),
+        },
+        content: null,
+      },
+    ];
   }
   return formatText(item);
 };
