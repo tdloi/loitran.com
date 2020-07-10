@@ -11,12 +11,14 @@ export interface IBlock extends NotionEntry {
   type:
     | "bookmark"
     | "code"
+    | "image"
     | "text"
     | "page"
     | "bullet_list"
     | "header"
     | "sub_header"
-    | "sub_sub_header";
+    | "sub_sub_header"
+    | "quote";
   format: {
     // bookmark
     bookmark_cover: string;
@@ -25,6 +27,10 @@ export interface IBlock extends NotionEntry {
   properties: {
     // @ts-ignore
     title: Array<[string, [string, string?]?]>;
+    // @ts-ignore
+    source: Array<string>; // image
+    // @ts-ignore
+    caption: Array<string>; // image
     description: [[string]]; // bookmark
     link: [[string]]; // bookmark
     language: [[string]]; // code
@@ -105,5 +111,5 @@ export interface IGetTableOptions {
 export interface IContent {
   tag: string;
   attr: object;
-  content?: IContent | string;
+  content?: IContent | string | null;
 }

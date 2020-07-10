@@ -23,16 +23,36 @@ export const render = (item: IContent, key: string | number | null = null): Reac
 };
 
 export const format = (item: IBlock): Array<IContent> => {
+  if (item.type === "header") {
+    return [{ tag: "h1", attr: {}, content: sanitize(item.properties.title[0][0]) }];
+  }
+  if (item.type === "image") {
+    return [
+      {
+        tag: "img",
+        attr: { src: item.properties.source, caption: item.properties.caption },
+        content: null,
+      },
+    ];
+  }
+  if (item.type === "quote") {
+    // TODO: Allow line split \n
+    return [{ tag: "quote", attr: {}, content: item.properties.title[0][0] }];
+  }
+  return formatText(item);
+};
+
+export const formatText = (item: IBlock): Array<IContent> => {
   return (
     item.properties?.title.reduce((acc, curr) => {
-      acc.push(formatElementTag({} as IContent, curr?.[1] as any, 0, sanitize(curr?.[0] ?? "")));
+      acc.push(formatTextTag({} as IContent, curr?.[1] as any, 0, sanitize(curr?.[0] ?? "")));
       return acc;
     }, [] as any) ?? []
   );
 };
 
 // recursive format element as each element may have multiple tag (bold, italic,...)
-const formatElementTag = (
+const formatTextTag = (
   item: IContent,
   tags: Array<[string, string?]> | undefined,
   index: number,
@@ -72,5 +92,5 @@ const formatElementTag = (
   } else {
     item.content = { tag: tag, attr: attr, content: item.content };
   }
-  return formatElementTag(item, tags, index + 1);
+  return formatTextTag(item, tags, index + 1);
 };
