@@ -7,7 +7,7 @@ interface NotionEntry {
   created_by_table: string;
 }
 
-interface Block extends NotionEntry {
+export interface IBlock extends NotionEntry {
   type:
     | "bookmark"
     | "code"
@@ -23,11 +23,12 @@ interface Block extends NotionEntry {
     bookmark_icon: string;
   };
   properties: {
-    title: [[string]];
+    // @ts-ignore
+    title: Array<[string, [string, string?]?]>;
     description: [[string]]; // bookmark
     link: [[string]]; // bookmark
     language: [[string]]; // code
-    [key: string]: [[string | [[string, { type: string; [key: string]: string }]]]];
+    [key: string]: [[string | [[string, { type: string; [key: string]: string } | string]]]];
   };
   content: [string]; // page
 }
@@ -58,7 +59,7 @@ export interface NotionResponse {
   recordMap: {
     block: {
       [key: string]: {
-        value: Block;
+        value: IBlock;
       };
     };
     collection: {
@@ -99,4 +100,10 @@ export interface IGetTableOptions {
   limit?: number;
   search?: string;
   published?: null | boolean;
+}
+
+export interface IContent {
+  tag: string;
+  attr: object;
+  content?: IContent | string;
 }

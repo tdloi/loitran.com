@@ -2,14 +2,15 @@ import slugify from "slugify";
 import { getTable, getPage } from "./getData";
 import { BLOG_INDEX_ID, INDEX_ID } from "../../constants";
 import { IBlogEntry, IGetTableOptions } from "../../interfaces";
+import { format } from "../../helpers";
 
 export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry[] | null> {
   const contentsList = await getTable(BLOG_INDEX_ID, { limit: 999, published: true, ...options });
 
   const schema = Object.values(contentsList.recordMap.collection)[0].value.schema;
   const blockIds = contentsList.result.blockIds;
-  const lists = blockIds.map<IBlogEntry>((id) =>
-    Object.keys(schema).reduce(
+  const lists = blockIds.map<IBlogEntry>((id) => {
+    const post = Object.keys(schema).reduce(
       (result, index) => {
         const prop_value = contentsList.recordMap.block[id].value.properties?.[index];
         const key = schema[index].name.toLowerCase();
@@ -50,8 +51,10 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
         tags: [],
         year: null,
       }
-    )
-  );
+    );
+    post["id"] = id;
+    return post;
+  });
 
   if (lists.length === 0) return null;
 
@@ -66,28 +69,36 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
 
 export async function getIndex() {
   const data = await getPage(INDEX_ID);
-  const content = {};
+  const content: any = {};
   let label = null;
   let labelContent = [];
 
   for (let key of data.recordMap.block[INDEX_ID].value.content) {
-    const value = data.recordMap.block[key].value;
+    const item = data.recordMap.block[key].value;
 
-    if (value.properties == undefined) {
-      labelContent.push(null); // empty line
+    if (item.properties == undefined) {
+      if (label != null) {
+        labelContent.push({ tag: "br", attr: {}, content: null }); // empty line
+      }
       continue;
     }
-    if (value.type === "header") {
+
+    if (item.type === "header") {
       if (label !== null) {
         content[label] = labelContent;
       }
-      label = value.properties.title[0][0].toLowerCase();
+      label = item.properties.title[0][0].toLowerCase();
       labelContent = [];
-    } else {
-      labelContent.push(value.properties.title[0][0]);
+      continue;
     }
+    labelContent.push(...format(item));
+    labelContent.push({ tag: "br", attr: {}, content: null });
   }
-  content[label] = labelContent;
 
+  if (label != null) {
+    content[label] = labelContent;
+  }
   return content;
 }
+
+export async function getPost() {}

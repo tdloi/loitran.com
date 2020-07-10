@@ -1,11 +1,13 @@
 import { GetStaticProps } from "next";
 import { getBlogList, getIndex } from "../lib/notion";
 import { BlogEntries } from "../components/BlogEntry";
-import { IBlogEntry } from "../interfaces";
+import { IBlogEntry, IContent } from "../interfaces";
+import { Content } from "../components/Content";
+import { createElement } from "react";
 
 interface IProps {
   index: {
-    about?: Array<string>;
+    about: Array<IContent>;
   };
   posts: Array<IBlogEntry>;
 }
@@ -14,10 +16,7 @@ export default function Home(props: IProps) {
   return (
     <div className="container">
       <p className="intro">Hi, I'm Loi</p>
-      {props.index.about?.map((i) => {
-        if (i === null) return <br key={i} />;
-        return <p key={i}>{i}</p>;
-      })}
+      <Content content={props.index.about} />
       <section className="section">
         <h1 className="title">Recent Posts</h1>
         {!props.posts && <span>No post available</span>}
