@@ -110,6 +110,8 @@ export interface IGetTableOptions {
 
 export interface IContent {
   tag: string;
-  attr: object;
+  attr: {
+    [key: string]: any;
+  };
   content?: IContent | string | null;
 }

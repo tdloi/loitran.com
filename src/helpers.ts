@@ -14,6 +14,7 @@ export const formatDate = (date: string) => {
 
 // recursive render element
 export const render = (item: IContent, key: string | number | null = null): React.ReactElement => {
+  item.attr.key = key;
   if (item.tag === "code") {
     // ts does not support React Component directly
     return createElement(component.Code, item.attr as any, null);
