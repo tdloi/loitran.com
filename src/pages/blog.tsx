@@ -70,3 +70,8 @@ export const getStaticProps: GetStaticProps = async () => {
     unstable_revalidate: 60,
   };
 };
+
+export const config = {
+  // https://github.com/zeit/next.js/pull/11949
+  unstable_runtimeJS: false,
+};
