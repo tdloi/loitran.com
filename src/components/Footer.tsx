@@ -13,7 +13,6 @@ export const Footer: React.FC = () => {
       </div>
       <div>
         Powered by <span className="brand nextjs">NextJS</span> +{" "}
-        <span className="brand vercel">Vercel</span> +{" "}
         <span className="brand notion">Notion</span>
       </div>
       <style jsx>{`
