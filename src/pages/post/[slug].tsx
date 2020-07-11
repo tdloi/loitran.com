@@ -2,6 +2,7 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import { IBlogEntry } from "../../interfaces";
 import { getBlogList } from "../../lib/notion";
 import DefaultErrorPage from "next/error";
+import { ParsedUrlQuery } from "querystring";
 
 interface IProps {
   post: IBlogEntry | null;
@@ -54,7 +55,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  let { slug } = context.params;
+  let { slug }: any = context.params;
   if (typeof slug !== "string") {
     slug = slug[0];
   }

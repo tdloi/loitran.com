@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs";
 
-const normalizeId = (id: string) => {
-  if (!id) return id;
+const normalizeId = (id: string | undefined) => {
+  if (!id || id == undefined) return "";
   if (id.length === 36) return id;
   if (id.length !== 32) {
     throw new Error(
@@ -17,6 +17,10 @@ const normalizeId = (id: string) => {
 const CACHE_DIR = path.resolve(".cache");
 if (!fs.existsSync(CACHE_DIR)) {
   fs.mkdirSync(CACHE_DIR);
+}
+
+if (process.env.NOTION_TOKEN == undefined) {
+  throw new Error("Missing NOTION_TOKEN");
 }
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;

@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps = async () => {
   );
   const ids = await res.json();
   const stories = await Promise.all<IStory>(
-    ids.map((id) =>
+    ids.map((id: number) =>
       fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then((res) => res.json())
     )
   );

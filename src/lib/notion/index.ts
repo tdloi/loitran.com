@@ -9,6 +9,7 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
 
   const schema = Object.values(contentsList.recordMap.collection)[0].value.schema;
   const blockIds = contentsList.result.blockIds;
+  // @ts-ignore
   const lists = blockIds.map<IBlogEntry>((id) => {
     const post = Object.keys(schema).reduce(
       (result, index) => {
@@ -20,6 +21,7 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
           if (schema[index].type === "checkbox") {
             value = false;
           }
+          // @ts-ignore
           result[key] = value;
           return result;
         }
@@ -39,7 +41,7 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
           default:
             value = prop_value[0][0];
         }
-
+        // @ts-ignore
         result[key] = value;
         return result;
       },
@@ -52,6 +54,7 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
         year: null,
       }
     );
+    // @ts-ignore
     post["id"] = id;
     return post;
   });

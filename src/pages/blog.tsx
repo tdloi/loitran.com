@@ -1,25 +1,25 @@
 import { GetStaticProps } from "next";
 import { getBlogList, getIndex } from "../lib/notion";
 import { BlogEntries } from "../components/BlogEntry";
-import { IBlogEntry } from "../interfaces";
+import { IBlogEntry, IContent } from "../interfaces";
+import { Content } from "../components/Content";
+
+interface IPosts {
+  year: number;
+  posts: Array<IBlogEntry>;
+}
 
 interface IProps {
   index: {
-    blog: Array<string>;
+    blog: Array<IContent>;
   };
-  posts: Array<{
-    year: number;
-    posts: Array<IBlogEntry>;
-  }>;
+  posts: Array<IPosts>;
 }
 
 export default function Blog(props: IProps) {
   return (
     <div className="container">
-      {props.index.blog?.map((i) => {
-        if (i === null) return <br key={i} />;
-        return <p key={i}>{i}</p>;
-      })}
+      <Content content={props.index.blog} />
       {props.posts?.map((item) => (
         <section className="section" key={item.year}>
           <h1 className="title">{item.year}</h1>
@@ -45,6 +45,7 @@ export default function Blog(props: IProps) {
     </div>
   );
 }
+
 export const getStaticProps: GetStaticProps = async () => {
   const index = await getIndex();
   const posts = await getBlogList({ limit: 999 });
@@ -53,8 +54,8 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       index: index,
       posts:
-        posts?.reduce((acc, curr) => {
-          let item = acc.find((i: IBlogEntry) => i.year === curr.year);
+        posts?.reduce((acc: any, curr) => {
+          let item: IPosts | undefined = acc.find((i: IBlogEntry) => i.year === curr.year);
           if (item == null) {
             acc.push({
               year: curr.year,

@@ -74,6 +74,7 @@ export async function getTable(table_id: string, getTableOptions: IGetTableOptio
   };
 
   if (typeof options.published === "boolean") {
+    // @ts-ignore
     params.query["filter"] = {
       operator: "and",
       filters: [
@@ -89,6 +90,7 @@ export async function getTable(table_id: string, getTableOptions: IGetTableOptio
   }
 
   if (options.search !== "") {
+    // @ts-ignore
     params.loader["searchQuery"] = options.search;
   }
 
