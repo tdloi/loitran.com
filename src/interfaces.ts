@@ -106,6 +106,7 @@ export interface IGetTableOptions {
   limit?: number;
   search?: string;
   published?: null | boolean;
+  emptyDate?: boolean;
 }
 
 export interface IContent {

@@ -38,6 +38,7 @@ const defaultOptions: IGetTableOptions = {
   limit: 999,
   search: "",
   published: true,
+  emptyDate: false, // allow empty date field
 };
 
 export async function getTable(table_id: string, getTableOptions: IGetTableOptions) {
@@ -73,19 +74,33 @@ export async function getTable(table_id: string, getTableOptions: IGetTableOptio
     },
   };
 
+  const filters = [];
+
   if (typeof options.published === "boolean") {
+    // @ts-ignore
+    filters.push({
+      property: pageInfo.published_field,
+      filter: {
+        operator: "checkbox_is",
+        value: { type: "exact", value: options.published },
+      },
+    });
+  }
+
+  if (options.emptyDate === false) {
+    filters.push({
+      property: pageInfo.date_field,
+      filter: {
+        operator: "is_not_empty",
+      },
+    });
+  }
+
+  if (filters.length !== 0) {
     // @ts-ignore
     params.query["filter"] = {
       operator: "and",
-      filters: [
-        {
-          property: pageInfo.published_field,
-          filter: {
-            operator: "checkbox_is",
-            value: { type: "exact", value: options.published },
-          },
-        },
-      ],
+      filters: filters,
     };
   }
 
