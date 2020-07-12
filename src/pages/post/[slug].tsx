@@ -1,22 +1,26 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { IBlogEntry } from "../../interfaces";
+import { IBlogEntry, IContent } from "../../interfaces";
 import { getBlogList } from "../../lib/notion";
 import DefaultErrorPage from "next/error";
-import { ParsedUrlQuery } from "querystring";
+import { getPage } from "../../lib/notion/getData";
+import { format } from "../../helpers";
+import { Content } from "../../components/Content";
 
 interface IProps {
-  post: IBlogEntry | null;
+  metadata: IBlogEntry | null;
+  content: Array<IContent>;
 }
 
 export default function Home(props: IProps) {
-  if (props.post == null) {
+  if (props.metadata == null) {
     return <DefaultErrorPage statusCode={404} />;
   }
 
   return (
     <div className="container">
       <section className="section">
-        <h1 className="title">{props.post?.name}</h1>
+        <h1 className="title">{props.metadata?.name}</h1>
+        <Content content={props.content} />
       </section>
       <style jsx>{`
         .section {
@@ -60,15 +64,33 @@ export const getStaticProps: GetStaticProps = async (context) => {
     slug = slug[0];
   }
 
-  let post = await getBlogList({
+  const metadata = await getBlogList({
     limit: 1,
     search: slug,
   });
 
+  if (metadata == null) {
+    return {
+      props: {
+        metadata: null,
+      },
+    };
+  }
+  const data = await getPage(metadata[0].id);
+  const content = data.recordMap.block[metadata[0].id].value.content.map((id) =>
+    format(data.recordMap.block[id].value)
+  );
+
   return {
     props: {
-      post: post?.[0] ?? null,
+      metadata: metadata[0],
+      content: content,
     },
     unstable_revalidate: 60,
   };
+};
+
+export const config = {
+  // https://github.com/zeit/next.js/pull/11949
+  unstable_runtimeJS: false,
 };
