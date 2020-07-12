@@ -114,5 +114,5 @@ export interface IContent {
   attr: {
     [key: string]: any;
   };
-  content?: IContent | string | null;
+  content?: Array<IContent> | IContent | string | null;
 }
