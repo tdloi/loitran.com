@@ -86,7 +86,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       metadata: metadata[0],
       content: content,
     },
-    unstable_revalidate: 60,
+    revalidate: 60,
   };
 };
 

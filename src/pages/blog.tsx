@@ -67,7 +67,7 @@ export const getStaticProps: GetStaticProps = async () => {
           return acc;
         }, []) ?? null,
     },
-    unstable_revalidate: 60,
+    revalidate: 60,
   };
 };
 
