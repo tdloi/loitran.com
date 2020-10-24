@@ -1,8 +1,9 @@
 import { GetStaticProps } from "next";
 import { IBlogEntry } from "../interfaces";
-import { getContent } from "../helpers";
+import { getContent, getPosts } from "../helpers";
 import { NotionRenderer, BlockMapType } from "react-notion";
 import { INDEX_ID } from "../constants";
+import { BlogEntries } from "../components/BlogEntry";
 
 interface IProps {
   about: BlockMapType;
@@ -17,8 +18,8 @@ export default function Home(props: IProps) {
 
       <section className="section">
         <h1 className="title">Recent Posts</h1>
-        {/* {!props.posts && <span>No post available</span>} */}
-        {/* <BlogEntries entries={props.posts} /> */}
+        {!props.posts && <span>No post available</span>}
+        <BlogEntries entries={props.posts} />
       </section>
       <style jsx>{`
         .section {
@@ -39,13 +40,13 @@ export default function Home(props: IProps) {
   );
 }
 export const getStaticProps: GetStaticProps = async () => {
-  // const recentsPost = await getBlogList({ limit: 3 });
+  const recentsPost = await getPosts("", 3);
   const about = await getContent(INDEX_ID, "about");
 
   return {
     props: {
       about: about,
-      // posts: recentsPost,
+      posts: recentsPost,
     },
     revalidate: 60,
   };

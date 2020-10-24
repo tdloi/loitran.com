@@ -1,14 +1,13 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { IBlogEntry, IContent } from "../../interfaces";
-import { getBlogList } from "../../lib/notion";
+import { IBlogEntry } from "../../interfaces";
 import DefaultErrorPage from "next/error";
-import { getPage } from "../../lib/notion/getData";
-import { format } from "../../helpers";
-import { Content } from "../../components/Content";
+import { getPage } from "../../helpers";
+import { getPosts } from "../../helpers";
+import { NotionRenderer, BlockMapType } from "react-notion";
 
 interface IProps {
   metadata: IBlogEntry | null;
-  content: Array<IContent>;
+  content: BlockMapType;
 }
 
 export default function Home(props: IProps) {
@@ -20,7 +19,7 @@ export default function Home(props: IProps) {
     <div className="container">
       <section className="section">
         <h1 className="title">{props.metadata?.name}</h1>
-        <Content content={props.content} />
+        <NotionRenderer blockMap={props.content} />
       </section>
       <style jsx>{`
         .section {
@@ -42,10 +41,7 @@ export default function Home(props: IProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getBlogList({
-    limit: 999,
-    published: true,
-  });
+  const posts = await getPosts();
 
   return {
     paths:
@@ -64,10 +60,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     slug = slug[0];
   }
 
-  const metadata = await getBlogList({
-    limit: 1,
-    search: slug,
-  });
+  const metadata = await getPosts(slug, 1);
+  console.log(metadata);
 
   if (metadata == null) {
     return {
@@ -76,15 +70,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
     };
   }
-  const data = await getPage(metadata[0].id);
-  const content = data.recordMap.block[metadata[0].id].value.content.map((id) =>
-    format(data.recordMap.block[id].value)
-  );
+
+  const blocks = await getPage(metadata[0].id);
 
   return {
     props: {
       metadata: metadata[0],
-      content: content,
+      content: blocks.recordMap.block,
     },
     revalidate: 60,
   };

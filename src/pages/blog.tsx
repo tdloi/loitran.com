@@ -1,8 +1,7 @@
 import { GetStaticProps } from "next";
-import { getBlogList } from "../lib/notion";
 import { BlogEntries } from "../components/BlogEntry";
 import { IBlogEntry } from "../interfaces";
-import { getContent } from "../helpers";
+import { getContent, getPosts } from "../helpers";
 import { INDEX_ID } from "../constants";
 import { NotionRenderer, BlockMapType } from "react-notion";
 
@@ -48,15 +47,20 @@ export default function Blog(props: IProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const description = await getContent(INDEX_ID, "blog");
-  const posts = await getBlogList({ limit: 999 });
+  const posts: IBlogEntry[] = await getPosts("");
+  for (let post of posts) {
+    post.year = parseInt(post.date);
+  }
 
   return {
     props: {
       description: description,
       posts:
-        posts?.reduce((acc: any, curr) => {
+        posts.reduce((acc: any, curr) => {
+          // divide post by year
           let item: IPosts | undefined = acc.find((i: IBlogEntry) => i.year === curr.year);
           if (item == null) {
+            // new year
             acc.push({
               year: curr.year,
               posts: [curr],
