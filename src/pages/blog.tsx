@@ -1,8 +1,10 @@
 import { GetStaticProps } from "next";
-import { getBlogList, getIndex } from "../lib/notion";
+import { getBlogList } from "../lib/notion";
 import { BlogEntries } from "../components/BlogEntry";
-import { IBlogEntry, IContent } from "../interfaces";
-import { Content } from "../components/Content";
+import { IBlogEntry } from "../interfaces";
+import { getContent } from "../helpers";
+import { INDEX_ID } from "../constants";
+import { NotionRenderer, BlockMapType } from "react-notion";
 
 interface IPosts {
   year: number;
@@ -10,16 +12,14 @@ interface IPosts {
 }
 
 interface IProps {
-  index: {
-    blog: Array<IContent>;
-  };
+  description: BlockMapType;
   posts: Array<IPosts>;
 }
 
 export default function Blog(props: IProps) {
   return (
     <div className="container">
-      <Content content={props.index.blog} />
+      <NotionRenderer blockMap={props.description} />
       {props.posts?.map((item) => (
         <section className="section" key={item.year}>
           <h1 className="title">{item.year}</h1>
@@ -47,12 +47,12 @@ export default function Blog(props: IProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const index = await getIndex();
+  const description = await getContent(INDEX_ID, "blog");
   const posts = await getBlogList({ limit: 999 });
 
   return {
     props: {
-      index: index,
+      description: description,
       posts:
         posts?.reduce((acc: any, curr) => {
           let item: IPosts | undefined = acc.find((i: IBlogEntry) => i.year === curr.year);

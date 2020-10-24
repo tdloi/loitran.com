@@ -61,37 +61,4 @@ export async function getBlogList(options: IGetTableOptions): Promise<IBlogEntry
   });
 }
 
-export async function getIndex() {
-  const data = await getPage(INDEX_ID);
-  const content: any = {};
-  let label = null;
-  let labelContent = [];
-
-  for (let key of data.recordMap.block[INDEX_ID].value.content) {
-    const item = data.recordMap.block[key].value;
-
-    if (item.properties == undefined) {
-      if (label != null) {
-        labelContent.push({ tag: "br", attr: {}, content: null }); // empty line
-      }
-      continue;
-    }
-
-    if (item.type === "header") {
-      if (label !== null) {
-        content[label] = labelContent;
-      }
-      label = item.properties.title[0][0].toLowerCase();
-      labelContent = [];
-      continue;
-    }
-    labelContent.push(format(item));
-  }
-
-  if (label != null) {
-    content[label] = labelContent;
-  }
-  return content;
-}
-
 export async function getPost() {}

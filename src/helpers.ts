@@ -2,6 +2,8 @@ import sanitize from "sanitize-html";
 import { IBlock, IContent } from "./interfaces";
 import { createElement } from "react";
 import { component } from "./components/Formatter";
+import { NotionAPI } from "notion-client";
+import { BlockMap } from "notion-types";
 
 export const formatDate = (date: string) => {
   const d = new Date(date);
@@ -124,3 +126,24 @@ const formatTextTag = (
   }
   return formatTextTag(item, tags, index + 1);
 };
+
+export async function getContent(pageId: string, section: string) {
+  const api = new NotionAPI();
+  const page = await api.getPageRaw(pageId);
+  let iteratingSectionItem = false;
+  return Object.keys(page.recordMap.block).reduce((blocks, id: string) => {
+    const block = page.recordMap.block[id];
+    // use header (h1) as section
+    if (block.value.type == "header") {
+      if (block.value.properties?.title[0][0].toLowerCase() === section.toLowerCase()) {
+        iteratingSectionItem = true;
+      } else {
+        iteratingSectionItem = false;
+      }
+    } else if (iteratingSectionItem === true) {
+      blocks[id] = block;
+    }
+
+    return blocks;
+  }, {} as BlockMap);
+}
