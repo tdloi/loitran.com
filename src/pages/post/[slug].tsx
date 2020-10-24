@@ -1,8 +1,7 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import { IBlogEntry } from "../../interfaces";
 import DefaultErrorPage from "next/error";
-import { getPage } from "../../helpers";
-import { getPosts } from "../../helpers";
+import { getPosts, getPage } from "../../helpers";
 import { NotionRenderer, BlockMapType } from "react-notion";
 
 interface IProps {

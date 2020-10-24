@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@types/prismjs": "^1.16.1",
-    "@types/sanitize-html": "^1.23.3",
     "minireset.css": "0.0.6",
     "next": "^9.5.1",
     "notion-client": "^2.5.1",
@@ -17,7 +16,6 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-notion": "github:splitbee/react-notion#master",
-    "sanitize-html": "^1.27.0",
     "slugify": "^1.4.4",
     "typeface-raleway": "0.0.75"
   },
