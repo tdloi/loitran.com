@@ -1,9 +1,9 @@
 import { GetStaticProps } from "next";
-import { IBlogEntry } from "../interfaces";
-import { getContent, getPosts } from "../helpers";
 import { NotionRenderer, BlockMapType } from "react-notion";
-import { INDEX_ID } from "../constants";
-import { BlogEntries } from "../components/BlogEntry";
+import { IBlogEntry } from "@/interfaces";
+import { getContent, getPosts } from "@/helpers";
+import { INDEX_ID } from "@/constants";
+import { BlogEntries } from "@/components/BlogEntry";
 
 interface IProps {
   about: BlockMapType;

@@ -1,8 +1,8 @@
-import { theme } from "../theme";
 import { FC } from "react";
-import { IBlogEntry } from "../interfaces";
 import Link from "next/link";
-import { formatDate } from "../helpers";
+import { IBlogEntry } from "@/interfaces";
+import { formatDate } from "@/helpers";
+import { theme } from "@/theme";
 
 interface IProps {
   entries: Array<IBlogEntry>;

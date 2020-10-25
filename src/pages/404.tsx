@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { theme } from "../theme";
+import { theme } from "@/theme";
 
 interface IStory {
   id: number;

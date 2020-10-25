@@ -1,8 +1,8 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { IBlogEntry } from "../../interfaces";
 import DefaultErrorPage from "next/error";
-import { getPosts, getPage } from "../../helpers";
 import { NotionRenderer, BlockMapType } from "react-notion";
+import { IBlogEntry } from "@/interfaces";
+import { getPosts, getPage } from "@/helpers";
 
 const shiki = require("shiki");
 
