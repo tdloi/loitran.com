@@ -15,7 +15,7 @@ export default function NotFound(props: IProps) {
     <div>
       <h1 className="title">Oops! Nothing here, how about reading some news?!</h1>
       <ul className="news">
-        {props.stories.map((story) => (
+        {props.stories?.map((story) => (
           <li key={story.id}>
             <a href={`https://news.ycombinator.com/item?id=${story.id}`} className="item">
               {story.title}

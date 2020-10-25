@@ -59,7 +59,7 @@ export default function Home(props: IProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getPosts();
+  const posts = await getPosts("", 2);
 
   return {
     paths:
@@ -68,7 +68,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
           params: { slug: post.slug },
         };
       }) ?? [],
-    fallback: false,
+    fallback: "unstable_blocking",
   };
 };
 
@@ -85,6 +85,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       props: {
         metadata: null,
       },
+      unstable_notFound: true,
     };
   }
 
