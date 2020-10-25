@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { theme } from "@/theme";
 
 export const Header: React.FC = () => {
   const nav = [
@@ -27,10 +26,17 @@ export const Header: React.FC = () => {
         </ul>
       </nav>
       <style jsx>{`
+        .header {
+          padding-top: 0.8rem;
+          display: flex;
+          justify-content: space-between;
+          border-bottom: 1px solid var(--bgAlt);
+        }
+
         .logo {
           text-decoration: none;
           font-size: 2rem;
-          color: ${theme.fg};
+          color: var(--fg);
         }
         .logo-short {
           display: none;
@@ -43,20 +49,14 @@ export const Header: React.FC = () => {
             display: unset;
           }
         }
-        .header {
-          padding-top: 0.8rem;
-          display: flex;
-          justify-content: space-between;
-          border-bottom: 1px solid ${theme.bgAlt};
-        }
 
         .nav {
           display: flex;
-          line-height: 3rem;
+          list-style: none;
         }
         .nav-item {
           text-decoration: none;
-          color: ${theme.fg};
+          color: var(--fg);
           margin-left: 2rem;
         }
       `}</style>

@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
       <style jsx>{`
         .footer {
           padding: 0.8rem 0;
-          border-top: 1px solid ${theme.bgAlt};
+          border-top: 1px solid var(--bgAlt);
           display: flex;
           flex-direction: row-reverse;
           justify-content: space-between;
@@ -37,15 +37,12 @@ export const Footer: React.FC = () => {
         .nextjs {
           color: yellow;
         }
-        .vercel {
-          color: plum;
-        }
         .notion {
           color: ghostwhite;
         }
         .link {
           text-decoration: underline;
-          color: ${theme.fg};
+          color: var(--fg);
           margin-left: 1rem;
         }
       `}</style>

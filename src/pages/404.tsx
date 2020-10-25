@@ -1,5 +1,4 @@
 import { GetStaticProps } from "next";
-import { theme } from "@/theme";
 
 interface IStory {
   id: number;
@@ -37,7 +36,7 @@ export default function NotFound(props: IProps) {
         .item {
           text-decoration: none;
           line-height: 2rem;
-          color: ${theme.fg};
+          color: var(--fg);
         }
         .item:hover {
           text-decoration: underline;

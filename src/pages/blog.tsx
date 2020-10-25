@@ -20,7 +20,7 @@ export default function Blog(props: IProps) {
     <div className="container">
       <NotionRenderer blockMap={props.description} />
       {props.posts?.map((item) => (
-        <section className="section" key={item.year}>
+        <section className="section" key={item.year} id={item.year.toString()}>
           <h1 className="title">{item.year}</h1>
           {!props.posts && <span>No post available</span>}
           <BlogEntries entries={item.posts} />

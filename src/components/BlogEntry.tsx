@@ -2,7 +2,6 @@ import { FC } from "react";
 import Link from "next/link";
 import { IBlogEntry } from "@/interfaces";
 import { formatDate } from "@/helpers";
-import { theme } from "@/theme";
 
 interface IProps {
   entries: Array<IBlogEntry>;
@@ -26,15 +25,15 @@ export const BlogEntries: FC<IProps> = (props) => {
           text-decoration: none;
         }
         .post-entry:hover {
-          border-bottom: 2px solid ${theme.fgAlt};
+          border-bottom: 2px solid var(--fgAlt);
         }
         .post-date {
           margin-right: 0.7rem;
           margin-bottom: 0.4rem;
-          color: ${theme.fgAlt};
+          color: var(--fgAlt);
         }
         .post-title {
-          color: ${theme.fg};
+          color: var(--fg);
         }
       `}</style>
     </ul>
