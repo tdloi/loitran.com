@@ -50,6 +50,10 @@ export async function getContent(pageId: string, section: string) {
 
 export async function getPosts(search: string = "", limit = 9999) {
   const page = await api.getPageRaw(BLOG_INDEX_ID);
+  if (page.recordMap.collection == null) {
+    return [];
+  }
+
   const collectionId = Object.keys(page.recordMap.collection || {})[0];
   const viewId = Object.keys(page.recordMap.collection_view || {})[0];
   const schema = Object.values(page.recordMap.collection || {})[0].value.schema;
@@ -103,6 +107,8 @@ function formatCollection(collections: CollectionInstance) {
   )[0].value.format.table_properties.map(
     (p: { width: number; visiable: boolean; property: string }) => p.property
   );
+
+  if (collections.result.total === 0) return [];
 
   const ids = collections.result.blockIds;
   return ids.map((id) => {
