@@ -8,6 +8,9 @@
 
 @font-face {
   font-family: "SpaceGrotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
   src: url("/SpaceGrotesk-Regular.woff2") format("woff2");
 }
 
@@ -33,6 +36,6 @@ body {
 }
 .notion-link {
   color: var(--fg);
-  text-decoration-color: var(--primary) ;
+  text-decoration-color: var(--primary);
   text-decoration-style: double;
 }

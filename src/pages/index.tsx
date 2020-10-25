@@ -44,7 +44,6 @@ export default function Home(props: IProps) {
 }
 export const getStaticProps: GetStaticProps = async () => {
   const recentsPost = await getPosts("", 3);
-  console.log(recentsPost);
   const about = await getContent(INDEX_ID, "about");
 
   return {
