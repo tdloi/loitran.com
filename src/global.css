@@ -1,0 +1,27 @@
+:root {
+  --bg: #12141c;
+  --fg: #d2d0d0;
+  --bgAlt: #2a2d37;
+  --fgAlt: #838383;
+}
+
+@font-face {
+  font-family: "SpaceGrotesk";
+  src: url("/SpaceGrotesk-Regular.woff2") format("woff2");
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: SpaceGrotesk, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.shiki {
+  padding: 1rem 0.5rem;
+}
