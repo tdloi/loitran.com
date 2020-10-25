@@ -13,7 +13,7 @@
     "notion-client": "^2.5.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-notion": "github:splitbee/react-notion#master",
+    "react-notion": "https://github.com/splitbee/react-notion",
     "shiki": "^0.2.6",
     "slugify": "^1.4.4"
   },
