@@ -2,13 +2,19 @@ import { NotionAPI } from "notion-client";
 import { BlockMap, CollectionInstance } from "notion-types";
 import { BLOG_INDEX_ID } from "./constants";
 
-export const formatDate = (date: string) => {
+export const formatDate = (
+  date: string,
+  callback?: (d: string, m: string, y: string) => string
+) => {
   const d = new Date(date);
   const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
   const mo = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
   const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
 
-  return `${da} ${mo} ${ye}`;
+  if (callback) {
+    return callback(da, mo, ye);
+  }
+  return `${da} ${mo}`;
 };
 
 const api = new NotionAPI();

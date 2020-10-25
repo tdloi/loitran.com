@@ -13,27 +13,27 @@ interface IProps {
 export default function Home(props: IProps) {
   return (
     <div className="container">
-      <p className="intro">Hi, I'm Loi</p>
+      <p className="hi">Hi, I'm Loi</p>
       <NotionRenderer blockMap={props.about} />
 
-      <section className="section">
+      <section className="recent-posts">
         <h1 className="title">Recent Posts</h1>
         {!props.posts && <span>No post available</span>}
         <BlogEntries entries={props.posts} />
       </section>
       <style jsx>{`
-        .section {
+        .recent-posts {
           margin-top: 1rem;
         }
-        .intro {
+        .hi {
           font-size: 2.5rem;
           font-weight: 600;
+          margin: 1.2rem 0 0;
         }
         .title {
           font-size: 2rem;
-          margin-top: 0.5rem;
-          margin-bottom: 0.5rem;
           text-decoration: underline;
+          margin-bottom: 0;
         }
       `}</style>
     </div>

@@ -9,11 +9,11 @@ interface IProps {
 
 export const BlogEntries: FC<IProps> = (props) => {
   return (
-    <ul>
+    <ul className="posts">
       {props?.entries?.map((post) => (
         <li key={post.slug}>
           <Link href={`/post/${post.slug}`}>
-            <a className="post-entry">
+            <a className="post">
               <span className="post-date">{formatDate(post.date)}</span>
               <span className="post-title">{post.name}</span>
             </a>
@@ -21,19 +21,24 @@ export const BlogEntries: FC<IProps> = (props) => {
         </li>
       ))}
       <style jsx>{`
-        .post-entry {
+        .posts {
+          margin-top: 0.5rem;
+        }
+        .post {
           text-decoration: none;
         }
-        .post-entry:hover {
+        .post:hover {
           border-bottom: 2px solid var(--fgAlt);
         }
         .post-date {
           margin-right: 0.7rem;
           margin-bottom: 0.4rem;
           color: var(--fgAlt);
+          font-size: 0.95rem;
         }
         .post-title {
           color: var(--fg);
+          font-size: 1.2rem;
         }
       `}</style>
     </ul>

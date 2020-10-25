@@ -2,7 +2,7 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import DefaultErrorPage from "next/error";
 import { NotionRenderer, BlockMapType } from "react-notion";
 import { IBlogEntry } from "@/interfaces";
-import { getPosts, getPage } from "@/helpers";
+import { getPosts, getPage, formatDate } from "@/helpers";
 
 const shiki = require("shiki");
 
@@ -19,7 +19,10 @@ export default function Home(props: IProps) {
   return (
     <div className="container">
       <section className="section">
-        <h1 className="title">{props.metadata?.name}</h1>
+        <h1 className="post-title">{props.metadata?.name}</h1>
+        <span className="post-date">
+          {formatDate(props.metadata.date, (d, m, y) => `${d} ${m} ${y}`)}
+        </span>
         <NotionRenderer
           blockMap={props.content}
           customBlockComponents={{
@@ -42,11 +45,13 @@ export default function Home(props: IProps) {
           font-size: 2.5rem;
           font-weight: 600;
         }
-        .title {
+        .post-title {
           font-size: 2rem;
           margin-top: 0.5rem;
-          margin-bottom: 0.5rem;
-          text-decoration: underline;
+          margin-bottom: 0;
+        }
+        .post-date {
+          color: var(--fgAlt);
         }
       `}</style>
     </div>
@@ -75,7 +80,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const metadata = await getPosts(slug, 1);
 
-  if (metadata == null) {
+  if (metadata.length == 0) {
     return {
       props: {
         metadata: null,

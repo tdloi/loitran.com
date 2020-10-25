@@ -1,5 +1,3 @@
-import { theme } from "@/theme";
-
 export const Footer: React.FC = () => {
   return (
     <footer className="footer">
