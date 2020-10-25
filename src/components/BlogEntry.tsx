@@ -30,11 +30,14 @@ export const BlogEntries: FC<IProps> = (props) => {
         .post:hover {
           border-bottom: 2px solid var(--fgAlt);
         }
+        .posts li:hover::marker {
+          color: var(--primary);
+        }
         .post-date {
           margin-right: 0.7rem;
           margin-bottom: 0.4rem;
           color: var(--fgAlt);
-          font-size: 0.95rem;
+          font-size: 0.92rem;
         }
         .post-title {
           color: var(--fg);
