@@ -18,8 +18,11 @@ export default function Home(props: IProps) {
 
       <section className="recent-posts">
         <h1 className="title">Recent Posts</h1>
-        {!props.posts && <span>No post available</span>}
-        <BlogEntries entries={props.posts} />
+        {props.posts.length === 0 ? (
+          <span>No post available</span>
+        ) : (
+          <BlogEntries entries={props.posts} />
+        )}
       </section>
       <style jsx>{`
         .recent-posts {
@@ -41,6 +44,7 @@ export default function Home(props: IProps) {
 }
 export const getStaticProps: GetStaticProps = async () => {
   const recentsPost = await getPosts("", 3);
+  console.log(recentsPost);
   const about = await getContent(INDEX_ID, "about");
 
   return {
