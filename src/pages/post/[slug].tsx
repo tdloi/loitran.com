@@ -4,6 +4,8 @@ import DefaultErrorPage from "next/error";
 import { getPosts, getPage } from "../../helpers";
 import { NotionRenderer, BlockMapType } from "react-notion";
 
+const shiki = require("shiki");
+
 interface IProps {
   metadata: IBlogEntry | null;
   content: BlockMapType;
@@ -18,7 +20,19 @@ export default function Home(props: IProps) {
     <div className="container">
       <section className="section">
         <h1 className="title">{props.metadata?.name}</h1>
-        <NotionRenderer blockMap={props.content} />
+        <NotionRenderer
+          blockMap={props.content}
+          customBlockComponents={{
+            code: ({ blockValue, renderComponent }) => (
+              <div
+                dangerouslySetInnerHTML={{
+                  // @ts-ignore
+                  __html: blockValue.hightlight,
+                }}
+              ></div>
+            ),
+          }}
+        />
       </section>
       <style jsx>{`
         .section {
@@ -60,7 +74,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   const metadata = await getPosts(slug, 1);
-  console.log(metadata);
 
   if (metadata == null) {
     return {
@@ -71,6 +84,32 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   const blocks = await getPage(metadata[0].id);
+  // Add Shiki code highlight
+  // additional language which Notion does not support
+  // e.g. // lang=JSX
+  const re = /^\/\/\slang=(?<language>[a-zA-Z]+)\n/;
+  for (let key in blocks.recordMap.block) {
+    const content = blocks.recordMap.block[key].value;
+    if (content.type === "code") {
+      let code = content.properties.title[0][0];
+      let lang = content.properties.language[0][0].toLowerCase();
+      const result = re.exec(code);
+      if (result?.groups != null) {
+        lang = result.groups.language.toLowerCase();
+        code = code.replace(re, "");
+      }
+
+      const hightlight = await shiki
+        .getHighlighter({
+          theme: "material-theme-darker",
+        })
+        .then((highlighter: any) => {
+          return highlighter.codeToHtml(code, lang);
+        });
+      // @ts-ignore
+      content.hightlight = hightlight;
+    }
+  }
 
   return {
     props: {

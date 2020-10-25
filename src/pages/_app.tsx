@@ -30,6 +30,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           font-size: 18px;
           line-height: 1.75;
         }
+        .shiki {
+          padding: 1rem 0.5rem;
+        }
       `}</style>
     </Layout>
   );
