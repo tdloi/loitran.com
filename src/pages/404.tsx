@@ -1,4 +1,6 @@
 import { GetStaticProps } from "next";
+import Head from "next/head";
+import { getTitle } from "@/helpers";
 
 interface IStory {
   id: number;
@@ -13,6 +15,9 @@ interface IProps {
 export default function NotFound(props: IProps) {
   return (
     <div>
+      <Head>
+        <title>{getTitle("Oops! Not Found")}</title>
+      </Head>
       <h1 className="title">Oops! Nothing here, how about reading some news?!</h1>
       <ul className="news">
         {props.stories?.map((story) => (

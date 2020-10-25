@@ -1,6 +1,6 @@
 import { NotionAPI } from "notion-client";
 import { BlockMap, CollectionInstance } from "notion-types";
-import { BLOG_INDEX_ID } from "./constants";
+import { BLOG_INDEX_ID, PAGE_TITLE } from "./constants";
 
 export const formatDate = (
   date: string,
@@ -16,6 +16,12 @@ export const formatDate = (
   }
   return `${da} ${mo}`;
 };
+
+export function getTitle(title: string | null, extra: string = "") {
+  if (title == null) return PAGE_TITLE + " " + extra;
+
+  return `${title} | ${PAGE_TITLE} ${extra}`;
+}
 
 const api = new NotionAPI();
 export async function getPage(pageId: string) {

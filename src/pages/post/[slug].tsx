@@ -1,23 +1,22 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import DefaultErrorPage from "next/error";
+import Head from "next/head";
 import { NotionRenderer, BlockMapType } from "react-notion";
 import { IBlogEntry } from "@/interfaces";
-import { getPosts, getPage, formatDate } from "@/helpers";
+import { getPosts, getPage, formatDate, getTitle } from "@/helpers";
 
 const shiki = require("shiki");
 
 interface IProps {
-  metadata: IBlogEntry | null;
+  metadata: IBlogEntry;
   content: BlockMapType;
 }
 
 export default function Home(props: IProps) {
-  if (props.metadata == null) {
-    return <DefaultErrorPage statusCode={404} />;
-  }
-
   return (
     <div className="container">
+      <Head>
+        <title>{getTitle(props.metadata.name, "Blog")}</title>
+      </Head>
       <section className="section">
         <h1 className="post-title">{props.metadata?.name}</h1>
         <span className="post-date">

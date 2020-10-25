@@ -1,9 +1,10 @@
 import { GetStaticProps } from "next";
+import Head from "next/head";
 import { NotionRenderer, BlockMapType } from "react-notion";
 import { BlogEntries } from "@/components/BlogEntry";
 import { IBlogEntry } from "@/interfaces";
-import { getContent, getPosts } from "@/helpers";
-import { INDEX_ID } from "@/constants";
+import { getContent, getPosts, getTitle } from "@/helpers";
+import { INDEX_ID, PAGE_TITLE } from "@/constants";
 
 interface IPosts {
   year: number;
@@ -18,6 +19,9 @@ interface IProps {
 export default function Blog(props: IProps) {
   return (
     <div className="container">
+      <Head>
+        <title>{getTitle(null, "Blog")}</title>
+      </Head>
       <NotionRenderer blockMap={props.description} />
       {props.posts?.map((item) => (
         <section className="section" key={item.year} id={item.year.toString()}>

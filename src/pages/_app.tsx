@@ -11,6 +11,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Loi Tran</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#12141c" key="theme-color" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" key="viewport" />
       </Head>
       <Header />
       <main className="content">
