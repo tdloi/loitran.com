@@ -30,8 +30,9 @@ export async function getPage(pageId: string) {
 
 export async function getContent(pageId: string, section: string) {
   const page = await api.getPageRaw(pageId);
+
   let iteratingSectionItem = false;
-  return Object.keys(page.recordMap.block).reduce((blocks, id: string) => {
+  return Object.keys(page.recordMap.block || {}).reduce((blocks, id: string) => {
     const block = page.recordMap.block[id];
     // use header (h1) as section
     if (block.value.type == "header") {

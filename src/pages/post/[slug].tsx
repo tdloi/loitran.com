@@ -67,7 +67,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
           params: { slug: post.slug },
         };
       }) ?? [],
-    fallback: "unstable_blocking",
+    fallback: "blocking",
   };
 };
 
@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       props: {
         metadata: null,
       },
-      unstable_notFound: true,
+      notFound: true,
     };
   }
 
