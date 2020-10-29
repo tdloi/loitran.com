@@ -23,6 +23,27 @@ export function getTitle(title: string | null, extra: string = "") {
   return `${title} | ${PAGE_TITLE} ${extra}`;
 }
 
+// https://github.com/NotionX/react-notion-x/blob/master/packages/notion-utils/src/parse-page-id.ts
+const pageIdRe = /\b([a-f0-9]{32})\b/;
+const pageId2Re = /\b([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\b/;
+
+const parsePageId = (id: string) => {
+  id = id.split("?")[0];
+
+  if (id.match(pageIdRe)) {
+    return `${id.substr(0, 8)}-${id.substr(8, 4)}-${id.substr(12, 4)}-${id.substr(
+      16,
+      4
+    )}-${id.substr(20)}`;
+  }
+
+  if (id.match(pageId2Re)) {
+    return id;
+  }
+
+  return "";
+};
+
 const api = new NotionAPI();
 export async function getPage(pageId: string) {
   return api.getPageRaw(pageId);
@@ -30,23 +51,36 @@ export async function getPage(pageId: string) {
 
 export async function getContent(pageId: string, section: string) {
   const page = await api.getPageRaw(pageId);
+  const _pageID = parsePageId(pageId);
 
   let iteratingSectionItem = false;
-  return Object.keys(page.recordMap.block || {}).reduce((blocks, id: string) => {
+  let contentIDs: string[] = [];
+  const content = Object.keys(page.recordMap.block).reduce((blocks, id: string) => {
     const block = page.recordMap.block[id];
-    // use header (h1) as section
+    // use header (h1) as seperator to divide each part into section
     if (block.value.type == "header") {
       if (block.value.properties?.title[0][0].toLowerCase() === section.toLowerCase()) {
         iteratingSectionItem = true;
       } else {
+        // this is on another section
         iteratingSectionItem = false;
       }
+    }
+    // always include current page so that React Notion could get list of content
+    else if (block.value.id === _pageID) {
+      blocks[id] = block;
     } else if (iteratingSectionItem === true) {
       blocks[id] = block;
+      contentIDs.push(id);
     }
 
     return blocks;
   }, {} as BlockMap);
+
+  // remove unused block id in page content list
+  // actually it is unnecessary, just to stop ReactNotion emit warning block not found
+  content[_pageID].value.content = contentIDs;
+  return content;
 }
 
 export async function getPosts(search: string = "", limit = 9999) {
