@@ -1,6 +1,6 @@
 import { NotionAPI } from "notion-client";
 import { BlockMap, CollectionInstance } from "notion-types";
-import { BLOG_INDEX_ID, PAGE_TITLE } from "./constants";
+import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE } from "./constants";
 
 export const formatDate = (
   date: string,
@@ -44,13 +44,19 @@ const parsePageId = (id: string) => {
   return "";
 };
 
-const api = new NotionAPI();
+const api = new NotionAPI({ authToken: NOTION_TOKEN });
 export async function getPage(pageId: string) {
   return api.getPageRaw(pageId);
 }
 
 export async function getContent(pageId: string, section: string) {
   const page = await api.getPageRaw(pageId);
+  if (page.recordMap?.block == null) {
+    throw new Error(
+      `Could not get page with id "${pageId}". Please make sure your INDEX_ID is correct.`
+    );
+  }
+
   const _pageID = parsePageId(pageId);
 
   let iteratingSectionItem = false;
