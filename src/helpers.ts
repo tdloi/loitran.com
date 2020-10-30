@@ -149,13 +149,22 @@ function formatCollection(collections: CollectionInstance) {
   const schema = Object.values(collections.recordMap.collection || {})[0].value.schema;
 
   // get schema fields order
-  const properties = Object.values(
+  const properties: string[] = Object.values(
     collections.recordMap.collection_view || {}
   )[0].value.format.table_properties.map(
     (p: { width: number; visiable: boolean; property: string }) => p.property
   );
 
   if (collections.result.total === 0) return [];
+
+  // check if there is any duplicate properties
+  const propertiesField = Object.values(schema).map((i) => i.name.toLowerCase());
+  if (new Set(propertiesField).size != propertiesField.length) {
+    const duplicatedPros = propertiesField.filter(
+      (i, index) => propertiesField.indexOf(i) !== index
+    );
+    throw new Error(`duplicate table property: ${duplicatedPros.join(" - ")}`);
+  }
 
   const ids = collections.result.blockIds;
   return ids.map((id) => {
@@ -165,7 +174,6 @@ function formatCollection(collections: CollectionInstance) {
     for (let prop of properties) {
       // hidden column
       if (schema[prop] == null) continue;
-      // TODO: Check dupplicate name
       let name = schema[prop].name.toLowerCase();
 
       row[name] = getColumnValue(
