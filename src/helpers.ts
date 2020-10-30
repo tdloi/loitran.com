@@ -46,11 +46,17 @@ const parsePageId = (id: string) => {
 
 const api = new NotionAPI({ authToken: NOTION_TOKEN });
 export async function getPage(pageId: string) {
-  return api.getPageRaw(pageId);
+  const res = await api.getPageRaw(pageId);
+  // @ts-ignore: API error
+  if (res.errorId != null) {
+    // @ts-ignore
+    throw new Error(`${res.name}: ${res.message}`);
+  }
+  return res;
 }
 
 export async function getContent(pageId: string, section: string) {
-  const page = await api.getPageRaw(pageId);
+  const page = await getPage(pageId);
   if (page.recordMap?.block == null) {
     throw new Error(
       `Could not get page with id "${pageId}". Please make sure your INDEX_ID is correct.`
@@ -90,7 +96,7 @@ export async function getContent(pageId: string, section: string) {
 }
 
 export async function getPosts(search: string = "", limit = 9999) {
-  const page = await api.getPageRaw(BLOG_INDEX_ID);
+  const page = await getPage(BLOG_INDEX_ID);
   if (page.recordMap.collection == null) {
     return [];
   }
