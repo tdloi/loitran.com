@@ -46,7 +46,13 @@ const parsePageId = (id: string) => {
 
 const api = new NotionAPI({ authToken: NOTION_TOKEN });
 export async function getPage(pageId: string) {
-  const res = await api.getPageRaw(pageId);
+  const startTime = Date.now();
+  const res = await api.getPageRaw(pageId).then((res) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`Finished get page 「${parsePageId(pageId)}」 in ${Date.now() - startTime}ms`);
+    }
+    return res;
+  });
   // @ts-ignore: API error
   if (res.errorId != null) {
     // @ts-ignore
@@ -103,6 +109,9 @@ export async function getPosts(search: string = "", limit = 9999) {
 
   const collectionId = Object.keys(page.recordMap.collection || {})[0];
   const viewId = Object.keys(page.recordMap.collection_view || {})[0];
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`Collection ID: ${collectionId}\nView ID: ${viewId}`);
+  }
   const schema = Object.values(page.recordMap.collection || {})[0].value.schema;
 
   const date_field = Object.keys(schema).filter((key) => schema[key].type === "date")[0];
