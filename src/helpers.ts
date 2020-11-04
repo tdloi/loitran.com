@@ -1,6 +1,7 @@
 import { NotionAPI } from "notion-client";
 import { BlockMap, CollectionInstance } from "notion-types";
 import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE } from "./constants";
+import { IPost } from "./interfaces";
 
 export const formatDate = (
   date: string,
@@ -101,7 +102,7 @@ export async function getContent(pageId: string, section: string) {
   return content;
 }
 
-export async function getPosts(search: string = "", limit = 9999) {
+export async function getPosts(search: string = "", limit = 9999): Promise<IPost[]> {
   const page = await getPage(BLOG_INDEX_ID);
   if (page.recordMap.collection == null) {
     return [];

@@ -9,6 +9,7 @@ const shiki = require("shiki");
 interface IProps {
   metadata: IBlogEntry;
   content: BlockMapType;
+  postsIndex: Record<string, string>;
 }
 
 export default function Home(props: IProps) {
@@ -33,6 +34,9 @@ export default function Home(props: IProps) {
                 }}
               ></div>
             ),
+          }}
+          hooks={{
+            setPageUrl: (pageId) => props.postsIndex[pageId],
           }}
         />
       </section>
@@ -116,10 +120,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
   }
 
+  const posts = await getPosts();
+  const postsIndex = posts.reduce<Record<string, string>>((acc, curr) => {
+    acc[curr.id] = curr.slug;
+    return acc;
+  }, {});
+
   return {
     props: {
       metadata: metadata[0],
       content: blocks.recordMap.block,
+      postsIndex: postsIndex,
     },
     revalidate: 60,
   };

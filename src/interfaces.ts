@@ -1,10 +1,13 @@
-export interface IBlogEntry {
+export interface IPost {
   id: string;
   name: string;
   date: string;
   slug: string;
+  description: string;
   published: boolean;
-  tags: Array<string>;
-  year: number;
+}
+export interface IBlogEntry extends IPost {
+  tags?: Array<string>;
+  year?: number;
   [key: string]: any;
 }

@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import { NotionRenderer, BlockMapType } from "react-notion";
 import { BlogEntries } from "@/components/BlogEntry";
-import { IBlogEntry } from "@/interfaces";
+import { IBlogEntry, IPost } from "@/interfaces";
 import { getContent, getPosts, getTitle } from "@/helpers";
 import { INDEX_ID, PAGE_TITLE } from "@/constants";
 
