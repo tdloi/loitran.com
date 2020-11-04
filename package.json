@@ -9,13 +9,12 @@
   },
   "dependencies": {
     "modern-normalize": "^1.0.0",
-    "next": "10.0.0",
+    "next": "10.0.1",
     "notion-client": "2.5.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-notion": "https://github.com/tdloi/react-notion#develop",
-    "shiki": "^0.2.6",
-    "slugify": "^1.4.4"
+    "shiki": "^0.2.6"
   },
   "prettier": {
     "printWidth": 100

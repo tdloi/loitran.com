@@ -1,6 +1,7 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
-import { NotionRenderer, BlockMapType } from "react-notion";
+import Image from "next/image";
+import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
 import { IBlogEntry } from "@/interfaces";
 import { getPosts, getPage, formatDate, getTitle } from "@/helpers";
 
@@ -33,6 +34,23 @@ export default function Home(props: IProps) {
                   __html: blockValue.hightlight,
                 }}
               ></div>
+            ),
+            image: ({ blockValue, renderComponent }) => (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Image
+                  src={defaultMapImageUrl(blockValue.properties.source[0][0], {
+                    // @ts-ignore
+                    value: blockValue,
+                  })}
+                  alt="Picture"
+                  // @ts-ignore
+                  width={blockValue.format.block_width}
+                  // @ts-ignore
+                  height={blockValue.format.block_height}
+                  loading="eager"
+                  layout="intrinsic"
+                />
+              </div>
             ),
           }}
           hooks={{
