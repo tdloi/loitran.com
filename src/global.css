@@ -42,6 +42,12 @@ blockquote {
   padding-left: 1rem;
 }
 
+pre {
+  overflow: auto;
+  width: calc(100vw - 4rem);
+  max-width: calc(980px - 4rem);
+}
+
 .notion-link {
   color: var(--fg);
   text-decoration-color: var(--primary);

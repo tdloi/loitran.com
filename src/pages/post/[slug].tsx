@@ -115,8 +115,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
         .then((highlighter: any) => {
           return highlighter.codeToHtml(code, lang);
         });
+      // remove code block so it could vertical scroll on mobile
       // @ts-ignore
-      content.hightlight = hightlight;
+      content.hightlight = hightlight
+        .replace("<code>", "")
+        .replace("</code>", "")
+        .replace(/\n/g, "<br />");
     }
   }
 
