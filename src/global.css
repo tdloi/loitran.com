@@ -34,8 +34,25 @@ body {
     padding: 1rem 1.2rem;
   }
 }
+
+blockquote {
+  border-left: solid 2px;
+  margin: 0;
+  padding: 0.25rem 0;
+  padding-left: 1rem;
+}
+
 .notion-link {
   color: var(--fg);
   text-decoration-color: var(--primary);
   text-decoration-style: double;
+}
+
+.notion-callout {
+  display: flex;
+  padding: 0.6rem 0.3rem;
+  border: solid 1px rgb(77, 77, 83);
+}
+.notion-callout .notion-emoji {
+  margin-right: 0.5rem;
 }
