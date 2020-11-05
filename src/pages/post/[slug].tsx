@@ -3,7 +3,8 @@ import Head from "next/head";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
 import { IBlogEntry } from "@/interfaces";
-import { getPosts, getPage, formatDate, getTitle } from "@/helpers";
+import { getPosts, getPage, formatDate, getTitle, getTweet, fetchTweet } from "@/helpers";
+import Tweet from "@/components/Notion/Tweet";
 
 const shiki = require("shiki");
 
@@ -67,6 +68,8 @@ export default function Home(props: IProps) {
                 className="video"
               ></iframe>
             ),
+            // @ts-ignore
+            tweet: ({ blockValue, renderComponent }) => <Tweet tweet={blockValue.meta} />,
           }}
           hooks={{
             setPageUrl: (pageId) => props.postsIndex[pageId],
@@ -164,6 +167,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
         .replace("<code>", "")
         .replace("</code>", "")
         .replace(/\n/g, "<br />");
+    }
+    if (content.type === "tweet") {
+      // @ts-ignore
+      content.meta = await getTweet(content.properties.source[0][0]);
     }
   }
 
