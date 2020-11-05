@@ -26,6 +26,9 @@ export default function Home(props: IProps) {
         </span>
         <NotionRenderer
           blockMap={props.content}
+          customDecoratorComponents={{
+            c: (props) => <code className="code">{props.children}</code>,
+          }}
           customBlockComponents={{
             code: ({ blockValue, renderComponent }) => (
               <div
@@ -52,6 +55,18 @@ export default function Home(props: IProps) {
                 />
               </div>
             ),
+            video: ({ blockValue, renderComponent }) => (
+              <iframe
+                // @ts-ignore
+                width={blockValue.format.block_width}
+                // @ts-ignore
+                height={blockValue.format.block_width * blockValue.format.block_aspect_ratio}
+                // @ts-ignore
+                src={blockValue.format.display_source.replace("youtube", "youtube-nocookie")}
+                style={{ maxWidth: "100%" }}
+                className="video"
+              ></iframe>
+            ),
           }}
           hooks={{
             setPageUrl: (pageId) => props.postsIndex[pageId],
@@ -73,6 +88,16 @@ export default function Home(props: IProps) {
         }
         .post-date {
           color: var(--fgAlt);
+        }
+        @media (max-width: 767px) {
+          .video {
+            max-height: 33vh;
+          }
+        }
+        .code {
+          font-size: 0.88rem;
+          padding: 0.1rem 0.2rem;
+          background: #b0a8a82b;
         }
       `}</style>
     </div>
