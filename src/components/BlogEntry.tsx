@@ -1,7 +1,7 @@
 import { FC } from "react";
 import Link from "next/link";
 import { IBlogEntry } from "@/interfaces";
-import { formatDate } from "@/helpers";
+import dayjs from "dayjs";
 
 interface IProps {
   entries: Array<IBlogEntry>;
@@ -14,7 +14,7 @@ export const BlogEntries: FC<IProps> = (props) => {
         <li key={post.slug}>
           <Link href={`/post/${post.slug}`}>
             <a className="post">
-              <span className="post-date">{formatDate(post.date)}</span>
+              <span className="post-date">{dayjs(post.date).format("DD MMM")}</span>
               <span className="post-title">{post.name}</span>
             </a>
           </Link>

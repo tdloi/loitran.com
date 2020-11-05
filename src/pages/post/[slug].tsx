@@ -2,8 +2,9 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
+import dayjs from "dayjs";
 import { IBlogEntry } from "@/interfaces";
-import { getPosts, getPage, formatDate, getTitle, getTweet, fetchTweet } from "@/helpers";
+import { getPosts, getPage, getTitle, getTweet, fetchTweet } from "@/helpers";
 import Tweet from "@/components/Notion/Tweet";
 
 const shiki = require("shiki");
@@ -22,9 +23,7 @@ export default function Home(props: IProps) {
       </Head>
       <section className="section">
         <h1 className="post-title">{props.metadata?.name}</h1>
-        <span className="post-date">
-          {formatDate(props.metadata.date, (d, m, y) => `${d} ${m} ${y}`)}
-        </span>
+        <span className="post-date">{dayjs(props.metadata.date).format("DD MMMM, YYYY")}</span>
         <NotionRenderer
           blockMap={props.content}
           customDecoratorComponents={{
@@ -91,6 +90,7 @@ export default function Home(props: IProps) {
         }
         .post-date {
           color: var(--fgAlt);
+          font-size: 0.95rem;
         }
         @media (max-width: 767px) {
           .video {

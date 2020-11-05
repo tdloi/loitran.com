@@ -4,21 +4,6 @@ import fetch from "node-fetch";
 import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE, TWITTER_TOKEN } from "./constants";
 import { IPost } from "./interfaces";
 
-export const formatDate = (
-  date: string,
-  callback?: (d: string, m: string, y: string) => string
-) => {
-  const d = new Date(date);
-  const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-  const mo = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
-  const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
-
-  if (callback) {
-    return callback(da, mo, ye);
-  }
-  return `${da} ${mo}`;
-};
-
 export function getTitle(title: string | null, extra: string = "") {
   if (title == null) return PAGE_TITLE + " " + extra;
 

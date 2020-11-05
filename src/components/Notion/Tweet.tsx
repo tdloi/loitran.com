@@ -1,12 +1,5 @@
 import Image from "next/image";
-function getTweetDate(date: string) {
-  const dateArr = date.split(" ");
-  return dateArr
-    .slice(0, 3)
-    .concat(", ")
-    .concat(dateArr[dateArr.length - 1])
-    .join(" ");
-}
+import dayjs from "dayjs";
 
 function renderMedia(tweetMedia: any) {
   return (
@@ -135,7 +128,7 @@ export default function Tweet({ tweet }: any) {
             {tweet.reply_count}
           </span>
         </div>
-        <span className="tweet-date"> {getTweetDate(tweet.created_at)}</span>
+        <span className="tweet-date"> {dayjs(tweet.created_at).format("DD MMM, YYYY")}</span>
       </div>
       <style jsx>{`
         .icon {
