@@ -3,33 +3,13 @@ import { BlockMap, CollectionInstance } from "notion-types";
 import fetch from "node-fetch";
 import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE, TWITTER_TOKEN } from "./constants";
 import { IPost } from "./interfaces";
+import { parsePageId } from "@tdloi/notion-utils";
 
 export function getTitle(title: string | null, extra: string = "") {
   if (title == null) return PAGE_TITLE + " " + extra;
 
   return `${title} | ${PAGE_TITLE} ${extra}`;
 }
-
-// https://github.com/NotionX/react-notion-x/blob/master/packages/notion-utils/src/parse-page-id.ts
-const pageIdRe = /\b([a-f0-9]{32})\b/;
-const pageId2Re = /\b([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\b/;
-
-const parsePageId = (id: string) => {
-  id = id.split("?")[0];
-
-  if (id.match(pageIdRe)) {
-    return `${id.substr(0, 8)}-${id.substr(8, 4)}-${id.substr(12, 4)}-${id.substr(
-      16,
-      4
-    )}-${id.substr(20)}`;
-  }
-
-  if (id.match(pageId2Re)) {
-    return id;
-  }
-
-  return "";
-};
 
 const api = new NotionAPI({ authToken: NOTION_TOKEN });
 export async function getPage(pageId: string) {
