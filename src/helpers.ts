@@ -4,6 +4,11 @@ import fetch from "node-fetch";
 import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE, TWITTER_TOKEN } from "./constants";
 import { IPost } from "./interfaces";
 import { parsePageId } from "@tdloi/notion-utils";
+import _dayjs from "dayjs";
+import _dayjsUTC from "dayjs/plugin/utc";
+
+_dayjs.extend(_dayjsUTC);
+export const dayjs = _dayjs.utc;
 
 export function getTitle(title: string | null, extra: string = "") {
   if (title == null) return PAGE_TITLE + " " + extra;
@@ -174,49 +179,4 @@ function getColumnValue(value: any, type: string) {
     default:
       return value[0];
   }
-}
-
-function getTweetId(url: string): string {
-  return url.substr(url.lastIndexOf("/") + 1);
-}
-
-export async function fetchTweet(tweetId: string) {
-  const guestToken = await fetch("https://api.twitter.com/1.1/guest/activate.json", {
-    headers: {
-      Authorization: `Bearer ${TWITTER_TOKEN}`,
-    },
-    method: "POST",
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if ("guest_token" in res) return res.guest_token;
-      throw new Error("Could not get GUEST TOKEN");
-    });
-  const tweet = await fetch(
-    `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?` +
-      new URLSearchParams({
-        tweet_mode: "extended",
-        include_reply_count: "1",
-      }),
-    {
-      headers: {
-        Authorization: `Bearer ${TWITTER_TOKEN}`,
-        "x-guest-token": guestToken,
-      },
-    }
-  ).then((res) => res.json());
-
-  return tweet;
-}
-
-export async function getTweet(url: string) {
-  const tweetId = getTweetId(url);
-  const tweet = await fetchTweet(tweetId);
-  const userId = tweet.globalObjects.tweets[tweetId]["user_id_str"];
-  return {
-    ...tweet.globalObjects.tweets[tweetId],
-    user: {
-      ...tweet.globalObjects.users[userId],
-    },
-  };
 }

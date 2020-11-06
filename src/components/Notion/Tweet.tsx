@@ -1,14 +1,20 @@
 import Image from "next/image";
-import dayjs from "dayjs";
+import { ITweet } from "@tdloi/notion-utils";
+import { dayjs } from "@/helpers";
 
-function renderMedia(tweetMedia: any) {
+interface IProps {
+  tweet: ITweet;
+}
+
+function renderMedia(tweetMedia: NonNullable<ITweet["includes"]["media"]>[0]) {
+  let url = tweetMedia.preview_image_url;
+  if (!url) {
+    url = tweetMedia.url;
+  }
+
   return (
     <div className="tweet-image">
-      <Image
-        src={tweetMedia.media_url_https}
-        width={tweetMedia.original_info.width}
-        height={tweetMedia.original_info.height}
-      />
+      <Image src={url} width={tweetMedia.width} height={tweetMedia.height} />
       <style jsx>{`
         .tweet-image {
           max-height: 300px;
@@ -20,20 +26,20 @@ function renderMedia(tweetMedia: any) {
   );
 }
 
-export default function Tweet({ tweet }: any) {
+export default function Tweet({ tweet }: IProps) {
   return (
     <div className="container">
       <div className="head">
         <div className="head-wrapper">
           <img
-            src={tweet.user.profile_image_url_https}
+            src={tweet.includes.users[0].profile_image_url}
             alt="tweet profile image"
             className="avatar"
           />
           <div className="user-info">
             <span className="name">
-              <span>{tweet.user.name}</span>
-              {tweet.user.verified && (
+              <span>{tweet.includes.users[0].name}</span>
+              {tweet.includes.users[0].verified && (
                 <span className="verified">
                   <svg
                     fill="white"
@@ -54,17 +60,17 @@ export default function Tweet({ tweet }: any) {
               )}
             </span>
             <a
-              href={`https://twitter.com/${tweet.user.screen_name}`}
+              href={`https://twitter.com/${tweet.includes.users[0].username}`}
               target="_blank"
               rel="noopener noreferrer"
               className="link"
             >
-              <span className="screen-name">@{tweet.user.screen_name}</span>
+              <span className="screen-name">@{tweet.includes.users[0].username}</span>
             </a>
           </div>
         </div>
         <a
-          href={`https://twitter.com/${tweet.user_id_str}/status/${tweet.conversation_id_str}`}
+          href={`https://twitter.com/${tweet.includes.users[0].username}/status/${tweet.conversation_id}`}
           target="_blank"
           rel="noopener noreferrer"
           className="link"
@@ -87,10 +93,10 @@ export default function Tweet({ tweet }: any) {
       </div>
       <div
         dangerouslySetInnerHTML={{
-          __html: tweet.full_text.substr(...tweet.display_text_range).replace(/\n/g, "<br />"),
+          __html: tweet.text,
         }}
       ></div>
-      {tweet.entities?.media?.[0] && renderMedia(tweet.entities.media[0])}
+      {tweet.includes.media && renderMedia(tweet.includes.media[0])}
       <div className="footer">
         <div className="tweet-data">
           <span>
@@ -108,7 +114,7 @@ export default function Tweet({ tweet }: any) {
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
               />
             </svg>{" "}
-            {tweet.favorite_count}
+            {tweet.public_metrics.like_count}
           </span>
           <span>
             <svg
@@ -125,7 +131,7 @@ export default function Tweet({ tweet }: any) {
                 d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
               />
             </svg>{" "}
-            {tweet.reply_count}
+            {tweet.public_metrics.reply_count}
           </span>
         </div>
         <span className="tweet-date"> {dayjs(tweet.created_at).format("DD MMM, YYYY")}</span>

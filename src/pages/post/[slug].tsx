@@ -2,10 +2,11 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
-import dayjs from "dayjs";
+import { getTweet } from "@tdloi/notion-utils";
 import { IBlogEntry } from "@/interfaces";
-import { getPosts, getPage, getTitle, getTweet, fetchTweet } from "@/helpers";
+import { getPosts, getPage, getTitle, dayjs } from "@/helpers";
 import Tweet from "@/components/Notion/Tweet";
+import { TWITTER_TOKEN } from "@/constants";
 
 const shiki = require("shiki");
 
@@ -170,7 +171,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     if (content.type === "tweet") {
       // @ts-ignore
-      content.meta = await getTweet(content.properties.source[0][0]);
+      content.meta = await getTweet(content.properties.source[0][0], TWITTER_TOKEN);
     }
   }
 
