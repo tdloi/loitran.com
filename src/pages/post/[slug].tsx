@@ -2,10 +2,9 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
-import { getTweet } from "@tdloi/notion-utils";
+import { getTweet, Tweet } from "@tdloi/notion-utils";
 import { IBlogEntry } from "@/interfaces";
 import { getPosts, getPage, getTitle, dayjs } from "@/helpers";
-import Tweet from "@/components/Notion/Tweet";
 import { TWITTER_TOKEN } from "@/constants";
 
 const shiki = require("shiki");
@@ -68,8 +67,10 @@ export default function Home(props: IProps) {
                 className="video"
               ></iframe>
             ),
-            // @ts-ignore
-            tweet: ({ blockValue, renderComponent }) => <Tweet tweet={blockValue.meta} />,
+            tweet: ({ blockValue, renderComponent }) => (
+              // @ts-ignore
+              <Tweet tweet={blockValue.meta} variant="dark" />
+            ),
           }}
           hooks={{
             setPageUrl: (pageId) => props.postsIndex[pageId],
