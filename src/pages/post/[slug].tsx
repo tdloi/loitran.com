@@ -5,7 +5,7 @@ import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
 import { getTweet, Tweet } from "@tdloi/notion-utils";
 import { IBlogEntry } from "@/interfaces";
 import { getPosts, getPage, getTitle, dayjs } from "@/helpers";
-import { TWITTER_TOKEN } from "@/constants";
+import { TWITTER_TOKEN, WORKER_PROXY } from "@/constants";
 
 const shiki = require("shiki");
 
@@ -172,7 +172,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     if (content.type === "tweet") {
       // @ts-ignore
-      content.meta = await getTweet(content.properties.source[0][0], TWITTER_TOKEN);
+      content.meta = await getTweet(content.properties.source[0][0], TWITTER_TOKEN, {
+        fetch: (url, options) =>
+          fetch(WORKER_PROXY, {
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              url: url,
+              body: options,
+            }),
+            method: "POST",
+          }),
+      });
     }
   }
 
