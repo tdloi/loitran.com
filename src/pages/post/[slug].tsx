@@ -2,12 +2,10 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
-import { getTweet, Tweet } from "@tdloi/notion-utils";
+import { getTweet, Tweet, proxyFetch, codeHighlight } from "@tdloi/notion-utils";
 import { IBlogEntry } from "@/interfaces";
 import { getPosts, getPage, getTitle, dayjs } from "@/helpers";
 import { TWITTER_TOKEN, WORKER_PROXY } from "@/constants";
-
-const shiki = require("shiki");
 
 interface IProps {
   metadata: IBlogEntry;
@@ -141,49 +139,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   const blocks = await getPage(metadata[0].id);
-  // Add Shiki code highlight
-  // additional language which Notion does not support
-  // e.g. // lang=JSX
-  const re = /^\/\/\slang=(?<language>[a-zA-Z]+)\n/;
+
   for (let key in blocks.recordMap.block) {
     const content = blocks.recordMap.block[key].value;
     if (content.type === "code") {
-      let code = content.properties.title[0][0];
-      let lang = content.properties.language[0][0].toLowerCase();
-      const result = re.exec(code);
-      if (result?.groups != null) {
-        lang = result.groups.language.toLowerCase();
-        code = code.replace(re, "");
-      }
-
-      const hightlight = await shiki
-        .getHighlighter({
-          theme: "material-theme-darker",
-        })
-        .then((highlighter: any) => {
-          return highlighter.codeToHtml(code, lang);
-        });
-      // remove code block so it could vertical scroll on mobile
       // @ts-ignore
-      content.hightlight = hightlight
-        .replace("<code>", "")
-        .replace("</code>", "")
-        .replace(/\n/g, "<br />");
+      content.hightlight = await codeHighlight(content, require("shiki"));
     }
     if (content.type === "tweet") {
       // @ts-ignore
       content.meta = await getTweet(content.properties.source[0][0], TWITTER_TOKEN, {
-        fetch: (url, options) =>
-          fetch(WORKER_PROXY, {
-            headers: {
-              "content-type": "application/json",
-            },
-            body: JSON.stringify({
-              url: url,
-              body: options,
-            }),
-            method: "POST",
-          }),
+        fetch: proxyFetch(WORKER_PROXY),
       });
     }
   }

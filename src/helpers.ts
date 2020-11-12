@@ -1,7 +1,6 @@
 import { NotionAPI } from "notion-client";
 import { BlockMap, CollectionInstance } from "notion-types";
-import fetch from "node-fetch";
-import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE, TWITTER_TOKEN } from "./constants";
+import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE } from "./constants";
 import { IPost } from "./interfaces";
 import { parsePageId } from "@tdloi/notion-utils";
 import _dayjs from "dayjs";
