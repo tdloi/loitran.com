@@ -1,10 +1,9 @@
 import { GetStaticProps } from "next";
-import Head from "next/head";
-import { NotionRenderer, BlockMapType } from "react-notion";
+import { NotionRenderer } from "react-notion";
 import { BlogEntries } from "@/components/BlogEntry";
-import { IBlogEntry } from "@/interfaces";
-import { getContent, getPosts, getTitle } from "@/helpers";
-import { INDEX_ID } from "@/constants";
+import { IBlogEntry, PageProps } from "@/interfaces";
+import { getContent, getPosts } from "@/helpers";
+import { Head } from "@/components/Head";
 
 interface IPosts {
   year: number;
@@ -12,17 +11,15 @@ interface IPosts {
 }
 
 interface IProps {
-  description: BlockMapType;
+  page: PageProps;
   posts: Array<IPosts>;
 }
 
 export default function Blog(props: IProps) {
   return (
     <div className="container">
-      <Head>
-        <title>{getTitle(null, "Blog")}</title>
-      </Head>
-      <NotionRenderer blockMap={props.description} />
+      <Head page={props.page} />
+      <NotionRenderer blockMap={props.page.content} />
       {props.posts?.map((item) => (
         <section className="section" key={item.year} id={item.year.toString()}>
           <h1 className="title">{item.year}</h1>
@@ -50,7 +47,7 @@ export default function Blog(props: IProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const description = await getContent(INDEX_ID, "blog");
+  const page = await getContent("blog");
   const posts: IBlogEntry[] = await getPosts("");
   for (let post of posts) {
     post.year = parseInt(post.date);
@@ -58,7 +55,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
-      description: description,
+      page: page,
       posts:
         posts.reduce((acc: any, curr) => {
           // divide post by year

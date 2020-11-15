@@ -1,79 +1,74 @@
 import { NotionAPI } from "notion-client";
-import { BlockMap, CollectionInstance } from "notion-types";
-import { BLOG_INDEX_ID, NOTION_TOKEN, PAGE_TITLE } from "./constants";
+import { CollectionInstance, TextBlock } from "notion-types";
+import LRU from "lru-cache";
+import { BLOG_INDEX_ID, INDEX_ID, NOTION_TOKEN } from "./constants";
 import { IPost } from "./interfaces";
-import { parsePageId } from "@tdloi/notion-utils";
+import {
+  parsePageId,
+  getPageRaw,
+  formatPageIntoSection,
+  NotionPageChunk,
+} from "@tdloi/notion-utils";
 import _dayjs from "dayjs";
 import _dayjsUTC from "dayjs/plugin/utc";
+import { BlockMapType } from "react-notion";
 
 _dayjs.extend(_dayjsUTC);
 export const dayjs = _dayjs.utc;
 
-export function getTitle(title: string | null, extra: string = "") {
-  if (title == null) return PAGE_TITLE + " " + extra;
+const cachePage = new LRU<string, NotionPageChunk>();
+export async function getPage(pageId: string, maxAge: number = 5 * 1000) {
+  const page = cachePage.get(pageId);
+  if (page) {
+    return page;
+  }
 
-  return `${title} | ${PAGE_TITLE} ${extra}`;
-}
-
-const api = new NotionAPI({ authToken: NOTION_TOKEN });
-export async function getPage(pageId: string) {
   const startTime = Date.now();
-  const res = await api.getPageRaw(pageId).then((res) => {
+  const res = await getPageRaw(pageId, { notionToken: NOTION_TOKEN }).then((res) => {
     if (process.env.NODE_ENV !== "production") {
       console.log(`Finished get page 「${parsePageId(pageId)}」 in ${Date.now() - startTime}ms`);
     }
     return res;
   });
-  // @ts-ignore: API error
+
   if (res.errorId != null) {
-    // @ts-ignore
     throw new Error(`${res.name}: ${res.message}`);
   }
+  cachePage.set(pageId, res, maxAge);
   return res;
 }
 
-export async function getContent(pageId: string, section: string) {
-  const page = await getPage(pageId);
+export async function getContent(section: string) {
+  const page = await getPage(INDEX_ID);
   if (page.recordMap?.block == null) {
     throw new Error(
-      `Could not get page with id "${pageId}". Please make sure your INDEX_ID is correct.`
+      `Could not get page with id "${INDEX_ID}". Please make sure your INDEX_ID is correct.`
     );
   }
 
-  const _pageID = parsePageId(pageId);
-
-  let iteratingSectionItem = false;
-  let contentIDs: string[] = [];
-  const content = Object.keys(page.recordMap.block).reduce((blocks, id: string) => {
-    const block = page.recordMap.block[id];
-    // use header (h1) as seperator to divide each part into section
-    if (block.value.type == "header") {
-      if (block.value.properties?.title[0][0].toLowerCase() === section.toLowerCase()) {
-        iteratingSectionItem = true;
-      } else {
-        // this is on another section
-        iteratingSectionItem = false;
-      }
-    }
-    // always include current page so that React Notion could get list of content
-    else if (block.value.id === _pageID) {
-      blocks[id] = block;
-    } else if (iteratingSectionItem === true) {
-      blocks[id] = block;
-      contentIDs.push(id);
-    }
-
-    return blocks;
-  }, {} as BlockMap);
-
-  // remove unused block id in page content list
-  // actually it is unnecessary, just to stop ReactNotion emit warning block not found
-  content[_pageID].value.content = contentIDs;
-  return content;
+  return formatPageIntoSection(page.recordMap.block, "sub_header")[section];
 }
 
+export function getText(blockMap: BlockMapType | string | null) {
+  if (blockMap == null) {
+    return "";
+  }
+  if (typeof blockMap === "string") {
+    return blockMap;
+  }
+
+  return Object.values(blockMap)
+    .filter((block) => block.value.type === "text")
+    .map((block) => {
+      const blockContent = block.value as TextBlock;
+      return blockContent.properties?.title.flatMap((i) => i[0]).join("");
+    })
+    .join(". ");
+}
+
+const api = new NotionAPI({ authToken: NOTION_TOKEN });
 export async function getPosts(search: string = "", limit = 9999): Promise<IPost[]> {
-  const page = await getPage(BLOG_INDEX_ID);
+  const page = await getPage(BLOG_INDEX_ID, 7 * 24 * 60 * 60 * 1000);
   if (page.recordMap.collection == null) {
     return [];
   }

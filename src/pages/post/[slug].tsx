@@ -1,13 +1,14 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
 import { getTweet, Tweet, proxyFetch, codeHighlight } from "@tdloi/notion-utils";
-import { IBlogEntry } from "@/interfaces";
-import { getPosts, getPage, getTitle, dayjs } from "@/helpers";
+import { IBlogEntry, PageProps } from "@/interfaces";
+import { getPosts, getPage, dayjs } from "@/helpers";
 import { WORKER_PROXY } from "@/constants";
+import { Head } from "@/components/Head";
 
 interface IProps {
+  page: PageProps;
   metadata: IBlogEntry;
   content: BlockMapType;
   postsIndex: Record<string, string>;
@@ -16,9 +17,7 @@ interface IProps {
 export default function Home(props: IProps) {
   return (
     <div className="container">
-      <Head>
-        <title>{getTitle(props.metadata.name, "Blog")}</title>
-      </Head>
+      <Head page={props.page} />
       <section className="section">
         <h1 className="post-title">{props.metadata?.name}</h1>
         <span className="post-date">{dayjs(props.metadata.date).format("DD MMMM, YYYY")}</span>
@@ -127,9 +126,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     slug = slug[0];
   }
 
-  const metadata = await getPosts(slug, 1);
+  const posts = await getPosts();
+  const postsIndex = posts.reduce<Record<string, string>>((acc, curr) => {
+    acc[curr.id] = curr.slug;
+    return acc;
+  }, {});
 
-  if (metadata.length == 0) {
+  const metadata = posts.find((i) => i.slug === slug);
+  if (metadata == undefined) {
     return {
       props: {
         metadata: null,
@@ -138,7 +142,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   }
 
-  const blocks = await getPage(metadata[0].id);
+  const blocks = await getPage(metadata.id);
 
   for (let key in blocks.recordMap.block) {
     const content = blocks.recordMap.block[key].value;
@@ -154,15 +158,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
   }
 
-  const posts = await getPosts();
-  const postsIndex = posts.reduce<Record<string, string>>((acc, curr) => {
-    acc[curr.id] = curr.slug;
-    return acc;
-  }, {});
-
   return {
     props: {
-      metadata: metadata[0],
+      metadata: metadata,
+      page: {
+        title: (metadata.name ?? "") + "| Loi Tran Blog",
+        description: metadata.description ?? "",
+      },
       content: blocks.recordMap.block,
       postsIndex: postsIndex,
     },

@@ -1,20 +1,21 @@
 import { GetStaticProps } from "next";
-import { NotionRenderer, BlockMapType } from "react-notion";
-import { IBlogEntry } from "@/interfaces";
+import { NotionRenderer } from "react-notion";
+import { IBlogEntry, PageProps } from "@/interfaces";
 import { getContent, getPosts } from "@/helpers";
-import { INDEX_ID } from "@/constants";
 import { BlogEntries } from "@/components/BlogEntry";
+import { Head } from "@/components/Head";
 
 interface IProps {
-  about: BlockMapType;
+  page: PageProps;
   posts: Array<IBlogEntry>;
 }
 
 export default function Home(props: IProps) {
   return (
     <div className="container">
+      <Head page={props.page} />
       <p className="hi">Hi, I'm Loi</p>
-      <NotionRenderer blockMap={props.about} />
+      <NotionRenderer blockMap={props.page.content} />
 
       <section className="recent-posts">
         <h1 className="title">Recent Posts</h1>
@@ -44,11 +45,11 @@ export default function Home(props: IProps) {
 }
 export const getStaticProps: GetStaticProps = async () => {
   const recentsPost = await getPosts("", 3);
-  const about = await getContent(INDEX_ID, "about");
+  const page = await getContent("index");
 
   return {
     props: {
-      about: about,
+      page: page,
       posts: recentsPost,
     },
     revalidate: 60,
