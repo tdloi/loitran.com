@@ -5,7 +5,7 @@ import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
 import { getTweet, Tweet, proxyFetch, codeHighlight } from "@tdloi/notion-utils";
 import { IBlogEntry } from "@/interfaces";
 import { getPosts, getPage, getTitle, dayjs } from "@/helpers";
-import { TWITTER_TOKEN, WORKER_PROXY } from "@/constants";
+import { WORKER_PROXY } from "@/constants";
 
 interface IProps {
   metadata: IBlogEntry;
@@ -148,7 +148,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     if (content.type === "tweet") {
       // @ts-ignore
-      content.meta = await getTweet(content.properties.source[0][0], TWITTER_TOKEN, {
+      content.meta = await getTweet(content.properties.source[0][0], {
         fetch: proxyFetch(WORKER_PROXY),
       });
     }
