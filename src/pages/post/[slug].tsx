@@ -1,11 +1,11 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import Image from "next/image";
-import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
-import { getTweet, Tweet, proxyFetch, codeHighlight, ITwitterOptions } from "@tdloi/notion-utils";
+import { BlockMapType } from "react-notion";
+import { getTweet, proxyFetch, codeHighlight, ITwitterOptions } from "@tdloi/notion-utils";
 import { IBlogPosts, PageProps } from "@/interfaces";
 import { getPosts, getPage, dayjs } from "@/helpers";
 import { WORKER_PROXY } from "@/constants";
 import { Head } from "@/components/Head";
+import { Content } from "@/components/Content";
 
 interface IProps {
   page: PageProps;
@@ -21,58 +21,7 @@ export default function Home(props: IProps) {
       <section className="section">
         <h1 className="post-title">{props.metadata?.name}</h1>
         <span className="post-date">{dayjs(props.metadata.date).format("DD MMMM, YYYY")}</span>
-        <NotionRenderer
-          blockMap={props.content}
-          customDecoratorComponents={{
-            c: (props) => <code className="code">{props.children}</code>,
-          }}
-          customBlockComponents={{
-            code: ({ blockValue, renderComponent }) => (
-              <div
-                dangerouslySetInnerHTML={{
-                  // @ts-ignore
-                  __html: blockValue.hightlight,
-                }}
-              ></div>
-            ),
-            image: ({ blockValue, renderComponent }) => (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Image
-                  src={defaultMapImageUrl(blockValue.properties.source[0][0], {
-                    // @ts-ignore
-                    value: blockValue,
-                  })}
-                  alt="Picture"
-                  // @ts-ignore
-                  width={blockValue.format.block_width}
-                  // @ts-ignore
-                  height={blockValue.format.block_height}
-                  loading="eager"
-                  layout="intrinsic"
-                />
-              </div>
-            ),
-            video: ({ blockValue, renderComponent }) => (
-              <iframe
-                // @ts-ignore
-                width={blockValue.format.block_width}
-                // @ts-ignore
-                height={blockValue.format.block_width * blockValue.format.block_aspect_ratio}
-                // @ts-ignore
-                src={blockValue.format.display_source.replace("youtube", "youtube-nocookie")}
-                style={{ maxWidth: "100%" }}
-                className="video"
-              ></iframe>
-            ),
-            tweet: ({ blockValue, renderComponent }) => (
-              // @ts-ignore
-              <Tweet tweet={blockValue.meta} variant="dark" />
-            ),
-          }}
-          hooks={{
-            setPageUrl: (pageId) => props.postsIndex[pageId],
-          }}
-        />
+        <Content blockMap={props.content} postsIndex={props.postsIndex} />
       </section>
       <style jsx>{`
         .section {

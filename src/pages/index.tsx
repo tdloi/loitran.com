@@ -1,9 +1,9 @@
 import { GetStaticProps } from "next";
-import { NotionRenderer } from "react-notion";
 import { IBlogPosts, PageProps } from "@/interfaces";
 import { getContent, getPosts } from "@/helpers";
 import { BlogPosts } from "@/components/BlogPosts";
 import { Head } from "@/components/Head";
+import { Content } from "@/components/Content";
 
 interface IProps {
   page: PageProps;
@@ -15,7 +15,7 @@ export default function Home(props: IProps) {
     <div className="container">
       <Head page={props.page} />
       <p className="hi">Hi, I'm Loi</p>
-      <NotionRenderer blockMap={props.page.content} />
+      <Content blockMap={props.page.content} />
 
       <section className="recent-posts">
         <h1 className="title">Recent Posts</h1>

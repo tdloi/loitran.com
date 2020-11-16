@@ -1,9 +1,9 @@
 import { GetStaticProps } from "next";
-import { NotionRenderer } from "react-notion";
 import { BlogPosts } from "@/components/BlogPosts";
 import { IBlogPosts, PageProps } from "@/interfaces";
 import { getContent, getPosts, dayjs } from "@/helpers";
 import { Head } from "@/components/Head";
+import { Content } from "@/components/Content";
 
 interface IPosts {
   year: number;
@@ -19,7 +19,7 @@ export default function Blog(props: IProps) {
   return (
     <div className="container">
       <Head page={props.page} />
-      <NotionRenderer blockMap={props.page.content} />
+      <Content blockMap={props.page.content} />
       {props.posts?.map((item) => (
         <section className="section" key={item.year} id={item.year.toString()}>
           <h1 className="title">{item.year}</h1>
