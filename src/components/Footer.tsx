@@ -1,47 +1,30 @@
+import { theme } from "@/constants";
+
 export const Footer: React.FC = () => {
   return (
     <footer className="footer">
-      <div>
-        <a className="link" href="https://github.com/tdloi">
-          github
-        </a>
-        <a className="link" href="https://twitter.com/tdloi">
-          twitter
-        </a>
-      </div>
-      <div>
-        Powered by <span className="brand nextjs">NextJS</span> +{" "}
-        <span className="brand notion">Notion</span>
-      </div>
+      <a className="link" href="https://github.com/tdloi">
+        github
+      </a>
+      <span className="interpunct">・</span>
+      <a className="link" href="https://twitter.com/tdloi">
+        twitter
+      </a>
       <style jsx>{`
         .footer {
           padding: 0.8rem 0;
-          border-top: 1px solid var(--bgAlt);
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: space-between;
+          border-top: 1px solid ${theme.bgAlt};
           line-height: 1.7rem;
-        }
-        @media (max-width: 570px) {
-          .footer {
-            flex-direction: column;
-            align-items: center;
-          }
-        }
-        .brand {
-          letter-spacing: 0.5px;
-          font-weight: 500;
-        }
-        .nextjs {
-          color: yellow;
-        }
-        .notion {
-          color: ghostwhite;
+          display: flex;
+          justify-content: flex-end;
         }
         .link {
           text-decoration: underline;
-          color: var(--fg);
-          margin-left: 1rem;
+          color: ${theme.fg};
+        }
+        .interpunct {
+          margin-left: 0.35rem;
+          margin-right: 0.35rem;
         }
       `}</style>
     </footer>

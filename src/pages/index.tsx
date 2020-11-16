@@ -26,13 +26,13 @@ export default function Home(props: IProps) {
         )}
       </section>
       <style jsx>{`
-        .recent-posts {
-          margin-top: 1rem;
-        }
         .hi {
           font-size: 2.5rem;
           font-weight: 600;
           margin: 1.2rem 0 0;
+        }
+        .recent-posts {
+          margin-top: 1rem;
         }
         .title {
           font-size: 2rem;

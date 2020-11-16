@@ -2,6 +2,7 @@ import { FC } from "react";
 import Link from "next/link";
 import { IBlogPosts } from "@/interfaces";
 import dayjs from "dayjs";
+import { theme } from "@/constants";
 
 interface IProps {
   posts: IBlogPosts[];
@@ -28,19 +29,19 @@ export const BlogPosts: FC<IProps> = (props) => {
           text-decoration: none;
         }
         .post:hover {
-          border-bottom: 2px solid var(--fgAlt);
+          border-bottom: 2px solid ${theme.fgAlt};
         }
         .posts li:hover::marker {
-          color: var(--primary);
+          color: ${theme.primary};
         }
         .post-date {
           margin-right: 0.7rem;
           margin-bottom: 0.4rem;
-          color: var(--fgAlt);
+          color: ${theme.fgAlt};
           font-size: 0.92rem;
         }
         .post-title {
-          color: var(--fg);
+          color: ${theme.fg};
           font-size: 1.2rem;
         }
       `}</style>

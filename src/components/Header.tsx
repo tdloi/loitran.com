@@ -1,3 +1,4 @@
+import { theme } from "@/constants";
 import Link from "next/link";
 
 export const Header: React.FC = () => {
@@ -30,13 +31,13 @@ export const Header: React.FC = () => {
           padding-top: 0.8rem;
           display: flex;
           justify-content: space-between;
-          border-bottom: 1px solid var(--bgAlt);
+          border-bottom: 1px solid ${theme.bgAlt};
         }
 
         .logo {
           text-decoration: none;
           font-size: 2rem;
-          color: var(--fg);
+          color: ${theme.fg};
         }
         .logo-short {
           display: none;
@@ -56,7 +57,7 @@ export const Header: React.FC = () => {
         }
         .nav-item {
           text-decoration: none;
-          color: var(--fg);
+          color: ${theme.fg};
           margin-left: 2rem;
         }
       `}</style>

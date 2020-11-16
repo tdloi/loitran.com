@@ -1,3 +1,4 @@
+import { theme } from "@/constants";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 
@@ -18,7 +19,7 @@ export default function NotFound(props: IProps) {
         <title>Oops! Not Found</title>
       </Head>
       <h1 className="title">Oops! Nothing here, how about reading some news?!</h1>
-      <ul className="news">
+      <ul>
         {props.stories?.map((story) => (
           <li key={story.id}>
             <a href={`https://news.ycombinator.com/item?id=${story.id}`} className="item">
@@ -40,7 +41,7 @@ export default function NotFound(props: IProps) {
         .item {
           text-decoration: none;
           line-height: 2rem;
-          color: var(--fg);
+          color: ${theme.fg};
         }
         .item:hover {
           text-decoration: underline;

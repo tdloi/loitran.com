@@ -3,7 +3,7 @@ import { BlockMapType } from "react-notion";
 import { getTweet, proxyFetch, codeHighlight, ITwitterOptions } from "@tdloi/notion-utils";
 import { IBlogPosts, PageProps } from "@/interfaces";
 import { getPosts, getPage, dayjs } from "@/helpers";
-import { WORKER_PROXY } from "@/constants";
+import { theme, WORKER_PROXY } from "@/constants";
 import { Head } from "@/components/Head";
 import { Content } from "@/components/Content";
 
@@ -18,18 +18,14 @@ export default function Home(props: IProps) {
   return (
     <div className="container">
       <Head page={props.page} />
-      <section className="section">
+      <section className="post">
         <h1 className="post-title">{props.metadata?.name}</h1>
         <span className="post-date">{dayjs(props.metadata.date).format("DD MMMM, YYYY")}</span>
         <Content blockMap={props.content} postsIndex={props.postsIndex} />
       </section>
       <style jsx>{`
-        .section {
+        .post {
           margin-top: 1rem;
-        }
-        .intro {
-          font-size: 2.5rem;
-          font-weight: 600;
         }
         .post-title {
           font-size: 2rem;
@@ -37,18 +33,8 @@ export default function Home(props: IProps) {
           margin-bottom: 0;
         }
         .post-date {
-          color: var(--fgAlt);
+          color: ${theme.fgAlt};
           font-size: 0.95rem;
-        }
-        @media (max-width: 767px) {
-          .video {
-            max-height: 33vh;
-          }
-        }
-        .code {
-          font-size: 0.88rem;
-          padding: 0.1rem 0.2rem;
-          background: #b0a8a82b;
         }
       `}</style>
     </div>

@@ -31,10 +31,6 @@ export default function Blog(props: IProps) {
         .section {
           margin-top: 1rem;
         }
-        .intro {
-          font-size: 2.5rem;
-          font-weight: 600;
-        }
         .title {
           font-size: 2rem;
           margin-top: 0.5rem;

@@ -13,7 +13,7 @@ export const Content: React.FC<PropsWithChildren<IProps>> = (props) => {
     <NotionRenderer
       {...props}
       customDecoratorComponents={{
-        c: (props) => <code className="code">{props.children}</code>,
+        c: (props) => <code className="notion-code">{props.children}</code>,
       }}
       customBlockComponents={{
         code: ({ blockValue }) => (
