@@ -8,8 +8,8 @@ export interface IPost {
   description: string;
   published: boolean;
 }
-export interface IBlogEntry extends IPost {
-  tags?: Array<string>;
+export interface IBlogPosts extends IPost {
+  tags?: string[];
   year?: number;
   [key: string]: any;
 }

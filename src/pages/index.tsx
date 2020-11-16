@@ -1,13 +1,13 @@
 import { GetStaticProps } from "next";
 import { NotionRenderer } from "react-notion";
-import { IBlogEntry, PageProps } from "@/interfaces";
+import { IBlogPosts, PageProps } from "@/interfaces";
 import { getContent, getPosts } from "@/helpers";
-import { BlogEntries } from "@/components/BlogEntry";
+import { BlogPosts } from "@/components/BlogPosts";
 import { Head } from "@/components/Head";
 
 interface IProps {
   page: PageProps;
-  posts: Array<IBlogEntry>;
+  posts: IBlogPosts[];
 }
 
 export default function Home(props: IProps) {
@@ -22,7 +22,7 @@ export default function Home(props: IProps) {
         {props.posts.length === 0 ? (
           <span>No post available</span>
         ) : (
-          <BlogEntries entries={props.posts} />
+          <BlogPosts posts={props.posts} />
         )}
       </section>
       <style jsx>{`

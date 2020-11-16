@@ -1,18 +1,18 @@
 import { GetStaticProps } from "next";
 import { NotionRenderer } from "react-notion";
-import { BlogEntries } from "@/components/BlogEntry";
-import { IBlogEntry, PageProps } from "@/interfaces";
-import { getContent, getPosts } from "@/helpers";
+import { BlogPosts } from "@/components/BlogPosts";
+import { IBlogPosts, PageProps } from "@/interfaces";
+import { getContent, getPosts, dayjs } from "@/helpers";
 import { Head } from "@/components/Head";
 
 interface IPosts {
   year: number;
-  posts: Array<IBlogEntry>;
+  posts: IBlogPosts[];
 }
 
 interface IProps {
   page: PageProps;
-  posts: Array<IPosts>;
+  posts: IPosts[];
 }
 
 export default function Blog(props: IProps) {
@@ -24,7 +24,7 @@ export default function Blog(props: IProps) {
         <section className="section" key={item.year} id={item.year.toString()}>
           <h1 className="title">{item.year}</h1>
           {!props.posts && <span>No post available</span>}
-          <BlogEntries entries={item.posts} />
+          <BlogPosts posts={item.posts} />
         </section>
       ))}
       <style jsx>{`
@@ -48,29 +48,27 @@ export default function Blog(props: IProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const page = await getContent("blog");
-  const posts: IBlogEntry[] = await getPosts("");
-  for (let post of posts) {
-    post.year = parseInt(post.date);
-  }
+  const posts: IBlogPosts[] = await getPosts("");
 
   return {
     props: {
       page: page,
       posts:
-        posts.reduce((acc: any, curr) => {
+        posts.reduce<IPosts[]>((acc, curr) => {
+          const year = parseInt(curr.date);
           // divide post by year
-          let item: IPosts | undefined = acc.find((i: IBlogEntry) => i.year === curr.year);
+          let item = acc.find((i) => i.year === year);
           if (item == null) {
             // new year
             acc.push({
-              year: curr.year,
+              year: year ?? dayjs().year(),
               posts: [curr],
             });
           } else {
             item.posts.push(curr);
           }
           return acc;
-        }, []) ?? null,
+        }, [] as IPosts[]) ?? null,
     },
     revalidate: 60,
   };

@@ -1,16 +1,16 @@
 import { FC } from "react";
 import Link from "next/link";
-import { IBlogEntry } from "@/interfaces";
+import { IBlogPosts } from "@/interfaces";
 import dayjs from "dayjs";
 
 interface IProps {
-  entries: Array<IBlogEntry>;
+  posts: IBlogPosts[];
 }
 
-export const BlogEntries: FC<IProps> = (props) => {
+export const BlogPosts: FC<IProps> = (props) => {
   return (
     <ul className="posts">
-      {props?.entries?.map((post) => (
+      {props?.posts?.map((post) => (
         <li key={post.slug}>
           <Link href={`/post/${post.slug}`}>
             <a className="post">

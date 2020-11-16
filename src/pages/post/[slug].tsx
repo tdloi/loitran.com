@@ -2,14 +2,14 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
 import { getTweet, Tweet, proxyFetch, codeHighlight } from "@tdloi/notion-utils";
-import { IBlogEntry, PageProps } from "@/interfaces";
+import { IBlogPosts, PageProps } from "@/interfaces";
 import { getPosts, getPage, dayjs } from "@/helpers";
 import { WORKER_PROXY } from "@/constants";
 import { Head } from "@/components/Head";
 
 interface IProps {
   page: PageProps;
-  metadata: IBlogEntry;
+  metadata: IBlogPosts;
   content: BlockMapType;
   postsIndex: Record<string, string>;
 }
