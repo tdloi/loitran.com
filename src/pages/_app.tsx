@@ -10,7 +10,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <div className="wrapper">
       <Head>
         <title>Loi Tran</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="favicon.svg" sizes="any" type="image/svg+xml" />
         <meta name="theme-color" content={theme.bg} key="theme-color" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" key="viewport" />
       </Head>

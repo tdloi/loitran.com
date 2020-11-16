@@ -1,0 +1,16 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 64" width="62" height="64">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style>
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/FG_Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="62" height="64" fill="#000"></rect><g transform="translate(10 10) rotate(0 21 22)"><text x="21" y="35" font-family="Cascadia, Segoe UI Emoji" font-size="36px" fill="#fff" text-anchor="middle" style="white-space: pre;" direction="ltr">LT</text></g></svg>
