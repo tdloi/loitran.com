@@ -1,7 +1,7 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import Image from "next/image";
 import { NotionRenderer, BlockMapType, defaultMapImageUrl } from "react-notion";
-import { getTweet, Tweet, proxyFetch, codeHighlight } from "@tdloi/notion-utils";
+import { getTweet, Tweet, proxyFetch, codeHighlight, ITwitterOptions } from "@tdloi/notion-utils";
 import { IBlogPosts, PageProps } from "@/interfaces";
 import { getPosts, getPage, dayjs } from "@/helpers";
 import { WORKER_PROXY } from "@/constants";
@@ -151,10 +151,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
       content.hightlight = await codeHighlight(content, require("shiki"));
     }
     if (content.type === "tweet") {
+      const options: ITwitterOptions = WORKER_PROXY ? { fetch: proxyFetch(WORKER_PROXY) } : {};
       // @ts-ignore
-      content.meta = await getTweet(content.properties.source[0][0], {
-        fetch: proxyFetch(WORKER_PROXY),
-      });
+      content.meta = await getTweet(content.properties.source[0][0], options);
     }
   }
 
