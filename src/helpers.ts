@@ -1,5 +1,5 @@
 import { NotionAPI } from "notion-client";
-import { Block, CollectionInstance } from "notion-types";
+import { Block, BlockMap, CollectionInstance } from "notion-types";
 import LRU from "lru-cache";
 import { BLOG_INDEX_ID, INDEX_ID, NOTION_TOKEN } from "./constants";
 import { IPost } from "./interfaces";
@@ -44,9 +44,11 @@ export async function getContent(section: string) {
       `Could not get page with id "${INDEX_ID}". Please make sure your INDEX_ID is correct.`
     );
   }
+
   // filter metadata
   // this is awkward, maybe allow formatPageIntoSection return unrelated block?!
-  const metadata = Object.values(page.recordMap.block)
+  const blocks = formatPageIntoSection<BlockMap>(page.recordMap.block, "header")[section];
+  const metadata = Object.values(blocks)
     .filter((block) => block.value.type === "bulleted_list")
     .reduce((acc: Record<string, string>, curr) => {
       const text = getText(curr.value);
