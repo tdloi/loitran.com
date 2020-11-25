@@ -1,5 +1,5 @@
 import { NotionAPI } from "notion-client";
-import { CollectionInstance, TextBlock } from "notion-types";
+import { Block, CollectionInstance } from "notion-types";
 import LRU from "lru-cache";
 import { BLOG_INDEX_ID, INDEX_ID, NOTION_TOKEN } from "./constants";
 import { IPost } from "./interfaces";
@@ -11,7 +11,6 @@ import {
 } from "@tdloi/notion-utils";
 import _dayjs from "dayjs";
 import _dayjsUTC from "dayjs/plugin/utc";
-import { BlockMapType } from "react-notion";
 
 _dayjs.extend(_dayjsUTC);
 export const dayjs = _dayjs.utc;
@@ -45,25 +44,34 @@ export async function getContent(section: string) {
       `Could not get page with id "${INDEX_ID}". Please make sure your INDEX_ID is correct.`
     );
   }
+  // filter metadata
+  // this is awkward, maybe allow formatPageIntoSection return unrelated block?!
+  const metadata = Object.values(page.recordMap.block)
+    .filter((block) => block.value.type === "bulleted_list")
+    .reduce((acc: Record<string, string>, curr) => {
+      const text = getText(curr.value);
+      if (text.includes("::")) {
+        const value = text.split("::");
+        acc[value[0].toLocaleLowerCase()] = value[1];
+      }
+      return acc;
+    }, {} as Record<string, string>);
 
-  return formatPageIntoSection(page.recordMap.block, "sub_header")[section];
+  return {
+    ...metadata,
+    ...formatPageIntoSection(page.recordMap.block, "sub_header")[section],
+  };
 }
 
-export function getText(blockMap: BlockMapType | string | null) {
-  if (blockMap == null) {
+function getText(block: Block | string | null): string {
+  if (block == null) {
     return "";
   }
-  if (typeof blockMap === "string") {
-    return blockMap;
+  if (typeof block === "string") {
+    return block;
   }
 
-  return Object.values(blockMap)
-    .filter((block) => block.value.type === "text")
-    .map((block) => {
-      const blockContent = block.value as TextBlock;
-      return blockContent.properties?.title.flatMap((i) => i[0]).join("");
-    })
-    .join(". ");
+  return block.properties.title.map((props: any) => props[0]).join("");
 }
 
 const api = new NotionAPI({ authToken: NOTION_TOKEN });

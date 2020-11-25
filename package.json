@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@tdloi/notion-utils": "0.2.0",
+    "@tdloi/notion-utils": "0.2.1",
     "dayjs": "^1.9.5",
     "lru-cache": "^6.0.0",
     "modern-normalize": "^1.0.0",

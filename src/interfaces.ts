@@ -15,7 +15,7 @@ export interface IBlogPosts extends IPost {
 }
 
 export type PageProps = {
-  title: BlockMapType | string;
-  description: BlockMapType | string;
+  title: string;
+  description: string;
   content: BlockMapType;
 };
